@@ -83,3 +83,16 @@ def render_listings(fixtures_dir: Path = FIXTURES_DIR, seed: int = DEFAULT_SEED)
 
 def sha256(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def write_or_check(check: bool, seed: int = DEFAULT_SEED) -> tuple[bool, str]:
+    """-> (ok, message). Writes retailer_listings.jsonl unless check=True."""
+    target = FIXTURES_DIR / "retailer_listings.jsonl"
+    expected = render_listings(seed=seed)
+    if check:
+        actual = target.read_text(encoding="utf-8") if target.is_file() else ""
+        if actual != expected:
+            return False, f"MISMATCH: {target} differs from generator output (seed {seed})"
+        return True, f"OK {target.name} sha256={sha256(actual)}"
+    target.write_text(expected, encoding="utf-8", newline="\n")
+    return True, f"wrote {target.name} ({expected.count(chr(10))} listings) sha256={sha256(expected)}"
