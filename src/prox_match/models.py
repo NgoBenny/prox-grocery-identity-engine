@@ -38,6 +38,15 @@ class RetailerListing(BaseModel):
     def _null_is_empty(cls, v):
         return "" if v is None else v
 
+    @field_validator("price_cents", mode="before")
+    @classmethod
+    def _price_is_a_number(cls, v):
+        # lax mode would turn true into 1 cent and "199" into 199
+        if isinstance(v, (bool, str)):
+            # ValueError, not TypeError: pydantic only turns ValueError into a 422
+            raise ValueError("price_cents must be an integer number of cents")  # noqa: TRY004
+        return v
+
 
 class TruthLabel(BaseModel):
     model_config = ConfigDict(extra="ignore", frozen=True)

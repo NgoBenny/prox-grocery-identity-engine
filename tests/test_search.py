@@ -62,6 +62,22 @@ def test_scoring_components_exposed_and_sorted(engine):
     assert [r["score"] for r in results] == sorted((r["score"] for r in results), reverse=True)
 
 
+def test_intent_prefilter_matches_full_catalog_scan(engine):  # issue #3
+    from prox_match.models import RetailerListing
+    from prox_match.normalize import token_match
+
+    index = engine.index
+    for q in ["chicken breast", "chiken brest", "milk", "organic baby spinach", "dog food",
+              "sharp cheddar", "pretzels"]:
+        qf = index.listing_features(RetailerListing(listing_id="q", retailer="-", raw_name=q))
+        # every product that covers all query words must be in the indexed pool
+        covering = {cid for cid, cf in index.features.items()
+                    if all(any(token_match(w, t) for t in
+                               set(cf.tokens) | {x for ph in cf.types for x in ph.split()})
+                           for w in qf.tokens)}
+        assert covering <= index.candidates(qf), q
+
+
 def test_brand_only_query(engine):
     result = engine.search("Heritage")
     assert result["results"] and all(

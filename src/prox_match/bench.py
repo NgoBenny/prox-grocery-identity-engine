@@ -32,8 +32,8 @@ def _summary(samples_ms: list[float]) -> dict:
 
 
 def run(searches: int = 100, warmup: int = 10, catalog=None, listings=None, aliases=None) -> dict:
-    if searches < 1:
-        raise ValueError("searches must be >= 1")
+    if searches < 1 or warmup < 0:
+        raise ValueError("searches must be >= 1 and warmup >= 0")
     start = time.perf_counter_ns()
     engine = Engine.from_paths(catalog, listings, aliases)
     build_ms = (time.perf_counter_ns() - start) / 1e6

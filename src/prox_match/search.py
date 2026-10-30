@@ -50,9 +50,15 @@ class SearchIndex:
 
     def _intent(self, qf) -> list[str]:
         index = self.engine.index
+        # Any product covering every query word shares a posting with it, so the inverted
+        # index is a safe pre-filter. A brand-only query has no words: take that brand's items.
+        if qf.tokens:
+            pool = index.candidates(qf)
+        else:
+            pool = {cid for cid, p in index.products.items() if p.brand == qf.brand}
         hits = []
-        for cid, cf in index.features.items():
-            product = index.products[cid]
+        for cid in sorted(pool):
+            cf, product = index.features[cid], index.products[cid]
             words = set(cf.tokens) | {w for ph in cf.types for w in ph.split()}
             if _coverage(qf.tokens, words) < 1.0:
                 continue

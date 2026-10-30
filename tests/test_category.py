@@ -2,7 +2,7 @@ import time
 
 import pytest
 
-from prox_match.category import FakeUpstreamWorker, aisle_category
+from prox_match.category import FakeUpstreamWorker, aisle_category, ask_upstream
 
 
 def test_retailer_category_is_overridden_by_catalog(engine, listing):
@@ -26,6 +26,15 @@ def test_timeout_is_bounded(engine, listing):
     engine.match(listing("Farmhouse Chicken Breast", "1 lb", "Farmhouse"),
                  FakeUpstreamWorker("timeout", delay_s=2.0))
     assert time.perf_counter() - start < 1.0
+
+
+def test_abandoned_timeouts_do_not_delay_later_calls(listing):  # issue #2
+    row = listing("Farmhouse Chicken Breast", "1 lb", "Farmhouse")
+    slow = FakeUpstreamWorker("timeout", delay_s=2.0)
+    for _ in range(6):  # more stuck calls than the old 4-thread pool had workers
+        assert ask_upstream(slow, row, timeout_s=0.05) == ("CATEGORY_UNCERTAIN", "UPSTREAM_TIMEOUT")
+    assert ask_upstream(FakeUpstreamWorker("confident", "MEAT"), row, timeout_s=0.5) == (
+        "MEAT", None)
 
 
 def test_confident_conflict_flags_review_but_keeps_category(engine, listing):

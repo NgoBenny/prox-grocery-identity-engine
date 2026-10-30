@@ -167,7 +167,7 @@ A wrong-ID prediction counts as both an FP and an FN. Zero denominators report `
 
 Across all 100 listings, 16 abstain and 22 carry `reviewer_flag`. Of the 62 clean generated listings, 3 abstain, all of them whole milk hitting the C107/C108 duplicate.
 
-**Benchmark** (`prox-match benchmark`, Windows 11 laptop, AMD64 with 12 logical CPUs, Python 3.12.14): engine build (load, index, match all 100 listings, search index) **39 ms**; **100 searches p50 0.43 ms, p95 0.68 ms** after 10 warm-ups; single-listing match p50 0.28 ms. Percentiles are nearest-rank. **Cache policy:** no result cache; the index is built at startup and treated as read-only, and decisions are computed once at load, so search never re-runs the matcher. Timings vary run to run; these are small-corpus measurements.
+**Benchmark** (`prox-match benchmark`, Windows 11 laptop, AMD64 with 12 logical CPUs, Python 3.12.14): engine build (load, index, match all 100 listings, search index) **39 ms**; **100 searches p50 0.26 ms, p95 0.39 ms** after 10 warm-ups (three runs within 0.01 ms; before the [#3](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/3) search pre-filter it was p50 0.43, p95 0.68); single-listing match p50 0.26 ms. Percentiles are nearest-rank. **Cache policy:** no result cache; the index is built at startup and treated as read-only, and decisions are computed once at load, so search never re-runs the matcher. Timings vary run to run; these are small-corpus measurements.
 
 ## Human review: what goes there, what never auto-approves
 
@@ -216,12 +216,13 @@ Across all 100 listings, 16 abstain and 22 carry `reviewer_flag`. Of the 62 clea
 - Product type phrases come from the catalog's `type` field. When no phrase is detected, matching falls back to lexical evidence and the remaining vetoes; abstention is not guaranteed. "Chicken Jerky Treats" without pet evidence abstains in the bundled catalog.
 - Generic unbranded listings of branded products ("Chicken Breast 1 lb", no brand) usually abstain, because of the missing-brand penalty.
 - `confidence` is not calibrated, and the 0.70 / 0.08 / 0.90 thresholds were set on 28 dev cases.
-- Open low-score findings: [#1](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/1), [#2](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/2), [#3](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/3), [#5](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/5).
+- The low-score review findings first filed as issues (#1, #2, #3, #5) were fixed afterwards, each with a regression test that fails on the old code.
+- `CatalogIndex.candidates` still scans the whole vocabulary for fuzzy token matches (a marked `shortcut:`). It's fine at this corpus size and is the first thing to replace at scale.
 
 ## Next three priorities
 
 1. **An independently labeled evaluation set** of a few hundred listings from a second person, then calibrate `confidence` against it (isotonic or binned), so thresholds come from measured precision rather than judgment.
-2. **Scale retrieval.** Replace the linear fuzzy vocabulary scan with a trigram or RapidFuzz `process.extract` index ([#3](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/3)), shard postings by category, and match incrementally by listing content hash (see [SCALE_AND_COST.md](SCALE_AND_COST.md)).
+2. **Scale retrieval.** Replace the linear fuzzy vocabulary scan in `CatalogIndex.candidates` with a trigram or RapidFuzz `process.extract` index, shard postings by category, and match incrementally by listing content hash (see [SCALE_AND_COST.md](SCALE_AND_COST.md)).
 3. **Learn the word lists from review outcomes.** Every reviewer decision on an ABSTAIN becomes a candidate alias, form cue or type synonym, approved into versioned lists, plus a catalog-merge workflow for duplicate clusters like C107/C108.
 
 ## Time and AI use

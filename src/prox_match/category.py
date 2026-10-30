@@ -10,9 +10,8 @@ Rules:
                       upstream suggestion (flagged), else UNKNOWN.
 """
 
+import threading
 import time
-from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import TimeoutError as FutureTimeout
 
 from .index import CatalogIndex
 from .normalize import aisle_category
@@ -40,17 +39,27 @@ class FakeUpstreamWorker:
         return self.category if self.mode == "confident" and self.category else UNCERTAIN
 
 
-_pool = ThreadPoolExecutor(max_workers=4, thread_name_prefix="upstream")
-
-
 def ask_upstream(worker, listing, timeout_s: float = UPSTREAM_TIMEOUT_S) -> tuple[str, str | None]:
-    """-> (category or CATEGORY_UNCERTAIN, reason code or None). Never raises."""
-    try:
-        return _pool.submit(worker.suggest, listing).result(timeout=timeout_s), None
-    except FutureTimeout:
+    """-> (category or CATEGORY_UNCERTAIN, reason code or None). Never raises.
+
+    One daemon thread per call: an abandoned slow call can't queue up later calls the way
+    a shared fixed-size pool would."""
+    result: dict = {}
+
+    def call():
+        try:
+            result["value"] = worker.suggest(listing)
+        except Exception:  # noqa: BLE001 - a crashing resolver is treated like an uncertain one
+            result["error"] = True
+
+    thread = threading.Thread(target=call, daemon=True, name="upstream")
+    thread.start()
+    thread.join(timeout_s)
+    if thread.is_alive():
         return UNCERTAIN, "UPSTREAM_TIMEOUT"
-    except Exception:  # noqa: BLE001 - a crashing resolver is treated like an uncertain one
+    if "error" in result:
         return UNCERTAIN, "UPSTREAM_ERROR"
+    return result["value"], None
 
 
 def assign_category(decision: dict, index: CatalogIndex, listing, worker=None,

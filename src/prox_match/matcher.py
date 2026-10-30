@@ -97,7 +97,8 @@ def match_listing(index: CatalogIndex, listing: RetailerListing) -> dict:
     reasons: list[str] = []
     winner, stage = None, "abstain"
 
-    exact = [cid for cid in index.lookup_signature(lf) if cid in {c.canonical_id for c in passing}]
+    passing_ids = {c.canonical_id for c in passing}
+    exact = [cid for cid in index.lookup_signature(lf) if cid in passing_ids]
     top = passing[0] if passing else None
     runner = passing[1] if len(passing) > 1 else None
     if lf.size_problem:
