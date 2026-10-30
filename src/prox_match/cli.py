@@ -5,10 +5,12 @@ import json
 import sys
 from pathlib import Path
 
+from . import bench
 from .category import FakeUpstreamWorker
 from .engine import Engine
-from .fixtures import write_or_check
-from .models import FixtureError, RetailerListing, load_jsonl
+from .evaluate import evaluate
+from .fixtures import FIXTURES_DIR, write_or_check
+from .models import FixtureError, RetailerListing, TruthLabel, load_jsonl
 
 DEMO_STEPS = [
     ("Positive match: brand alias 'Farm House' + '1 LB' = 16 oz", "T007", None),
@@ -84,6 +86,42 @@ def cmd_search(engine: Engine, args) -> int:
     return 0
 
 
+def _write(obj, path: str) -> None:
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    Path(path).write_text(json.dumps(obj, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def cmd_evaluate(engine: Engine, args) -> int:
+    truth = load_jsonl(args.truth, TruthLabel)
+    splits = ["dev", "heldout", "all"] if args.split == "all" else [args.split]
+    result = evaluate(engine, truth, Path(args.truth).read_text(encoding="utf-8-sig"), splits)
+    result["command"] = "prox-match " + " ".join(sys.argv[1:])
+    _write(result, args.output)
+    for split, s in result["splits"].items():
+        m = s["metrics"]
+        print(f"[{split}] n={s['n']} {s['confusion']} precision={m['precision']} "
+              f"recall={m['recall']} exact_id_accuracy={m['exact_id_accuracy']} "
+              f"abstention={m['abstention_rate']} "
+              f"high_conf_fp={m['high_confidence_false_positive_rate']} "
+              f"category_error={m['category_error_rate']}")
+        for kind in ("false_matches", "missed_matches", "category_errors"):
+            for row in s["report"][kind]:
+                print(f"   {kind}: {row['listing_id']} expected {row['expected']} "
+                      f"got {row['predicted']} ({', '.join(row['reason_codes'])})")
+    print(f"wrote {args.output}")
+    return 0
+
+
+def cmd_benchmark(args) -> int:
+    result = bench.run(args.searches, args.warmup, args.catalog, args.listings, args.aliases)
+    _write(result, args.output)
+    s = result["search"]
+    print(f"build {result['build_ms']} ms | {s['count']} searches p50 {s['p50_ms']} ms "
+          f"p95 {s['p95_ms']} ms | match p50 {result['match_one_listing']['p50_ms']} ms")
+    print(f"wrote {args.output}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="prox-match", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -112,6 +150,16 @@ def build_parser() -> argparse.ArgumentParser:
     search.add_argument("--retailer")
     search.add_argument("--limit", type=int, default=10)
 
+    ev = with_data(sub.add_parser("evaluate", help="metrics + confusion report vs truth labels"))
+    ev.add_argument("--truth", default=str(FIXTURES_DIR / "ground_truth.jsonl"))
+    ev.add_argument("--split", choices=["dev", "heldout", "all"], default="all")
+    ev.add_argument("--output", default="outputs/evaluation_report.json")
+
+    bm = with_data(sub.add_parser("benchmark", help="index build + repeated search latency"))
+    bm.add_argument("--searches", type=int, default=100)
+    bm.add_argument("--warmup", type=int, default=10)
+    bm.add_argument("--output", default="outputs/benchmark_report.json")
+
     fixtures = sub.add_parser("fixtures", help="regenerate or --check generated listings")
     fixtures.add_argument("--check", action="store_true")
     return parser
@@ -126,9 +174,11 @@ def main(argv: list[str] | None = None) -> int:
             ok, message = write_or_check(args.check)
             print(message)
             return 0 if ok else 1
+        if args.command == "benchmark":
+            return cmd_benchmark(args)
         engine = Engine.from_paths(args.catalog, args.listings, args.aliases)
-        return {"demo": cmd_demo, "match": cmd_match, "search": cmd_search}[args.command](
-            engine, args)
+        return {"demo": cmd_demo, "match": cmd_match, "search": cmd_search,
+                "evaluate": cmd_evaluate}[args.command](engine, args)
     except (FixtureError, ValueError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
