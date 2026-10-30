@@ -23,7 +23,8 @@ FALLBACK_MIN_COVERAGE = 0.5
 
 
 def _coverage(of, by) -> float:
-    return sum(any(token_match(a, b) for b in by) for a in of) / len(of) if of else 0.0
+    """Share of `of` found in `by`; nothing to find (a brand-only query) counts as covered."""
+    return sum(any(token_match(a, b) for b in by) for a in of) / len(of) if of else 1.0
 
 
 class SearchIndex:
@@ -42,6 +43,10 @@ class SearchIndex:
             for w in words | {w for ph in self.types[lid] for w in ph.split()}:
                 self.postings[w].add(lid)
         self.retailers = {row.retailer.casefold(): row.retailer for row in engine.listings.values()}
+        self.by_canonical: dict[str, set[str]] = defaultdict(set)
+        for lid, d in engine.decisions.items():
+            if d["canonical_id"]:
+                self.by_canonical[d["canonical_id"]].add(lid)
 
     def _intent(self, qf) -> list[str]:
         index = self.engine.index
@@ -50,6 +55,8 @@ class SearchIndex:
             product = index.products[cid]
             words = set(cf.tokens) | {w for ph in cf.types for w in ph.split()}
             if _coverage(qf.tokens, words) < 1.0:
+                continue
+            if qf.brand_status == "approved" and cf.brand != qf.brand:
                 continue
             if qf.types and not (cf.types & qf.types):
                 continue
@@ -67,7 +74,7 @@ class SearchIndex:
         if retailer is not None and retailer.casefold() not in self.retailers:
             raise ValueError(f"unknown retailer {retailer!r}; known: {sorted(self.retailers.values())}")
         qf = index.listing_features(RetailerListing(listing_id="query", retailer="-", raw_name=q))
-        if not qf.tokens:
+        if not qf.tokens and qf.brand_status != "approved":
             raise ValueError("query has no searchable words")
         intent = self._intent(qf)
         out = {"query": q, "retailer": retailer, "intent": {
@@ -81,7 +88,7 @@ class SearchIndex:
 
         categories = set(out["intent"]["categories"])
         types = set(out["intent"]["types"])
-        candidates = set()
+        candidates = set().union(*(self.by_canonical.get(cid, ()) for cid in intent))
         for qw in qf.tokens:
             for w, lids in self.postings.items():
                 if token_match(qw, w):
@@ -95,6 +102,9 @@ class SearchIndex:
             if d["assigned_category"] not in categories or not (self.types[lid] & types):
                 continue
             if f.pet != qf.pet:
+                continue
+            brand = index.products[d["canonical_id"]].brand if d["canonical_id"] else f.brand
+            if qf.brand_status == "approved" and brand != qf.brand:
                 continue
             q_cov = _coverage(qf.tokens, self.words[lid])
             # how much of the product the query names: catalog words when matched, so

@@ -63,6 +63,17 @@ def test_adversarial(engine, listing, case, raw_name, size_raw, brand_raw, expec
         assert reason in set(d["reason_codes"]) | vetoes
 
 
+def test_hot_dog_is_not_pet_food(engine, listing):
+    assert engine.index.listing_features(listing("Beef Hot Dogs", "16 oz")).pet is False
+    assert engine.index.listing_features(listing("Dog Food", "16 oz")).pet is True
+
+
+def test_pet_aisle_counts_as_pet_evidence(engine, listing):
+    row = listing("Chicken Jerky Treats", "16 oz", retailer_category="Pet Supplies")
+    assert engine.index.listing_features(row).pet is True
+    assert engine.match(row)["canonical_id"] != "C103"  # never human chicken
+
+
 def test_abstain_shape(engine, listing):
     d = engine.match(listing("Whole Milk", "1 gal"))
     assert d["canonical_id"] is None and d["canonical_name"] is None

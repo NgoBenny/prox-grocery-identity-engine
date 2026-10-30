@@ -15,22 +15,12 @@ from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FutureTimeout
 
 from .index import CatalogIndex
+from .normalize import aisle_category
 
 UNCERTAIN = "CATEGORY_UNCERTAIN"
 UNKNOWN = "UNKNOWN"
 UPSTREAM_TIMEOUT_S = 0.2
 _IDENTITY_VETOES = {"TYPE_MISMATCH", "FORM_MISMATCH", "PET_HUMAN_CONFLICT"}
-
-# Retailer aisle words -> catalog category. Order matters: "Canned Fish" is PANTRY.
-_AISLE_WORDS = [
-    ("pet", "PET"), ("frozen", "FROZEN"), ("freezer", "FROZEN"), ("canned", "PANTRY"),
-    ("pantry", "PANTRY"), ("grocery", "PANTRY"), ("soup", "PANTRY"), ("broth", "PANTRY"),
-    ("spice", "PANTRY"), ("cereal", "BREAKFAST"), ("breakfast", "BREAKFAST"),
-    ("meat", "MEAT"), ("poultry", "MEAT"), ("seafood", "SEAFOOD"), ("fish", "SEAFOOD"),
-    ("dairy", "DAIRY"), ("egg", "DAIRY"), ("cheese", "DAIRY"), ("produce", "PRODUCE"),
-    ("fruit", "PRODUCE"), ("vegetable", "PRODUCE"), ("juice", "BEVERAGES"),
-    ("drink", "BEVERAGES"), ("beverage", "BEVERAGES"),
-]
 
 
 class FakeUpstreamWorker:
@@ -61,11 +51,6 @@ def ask_upstream(worker, listing, timeout_s: float = UPSTREAM_TIMEOUT_S) -> tupl
         return UNCERTAIN, "UPSTREAM_TIMEOUT"
     except Exception:  # noqa: BLE001 - a crashing resolver is treated like an uncertain one
         return UNCERTAIN, "UPSTREAM_ERROR"
-
-
-def aisle_category(retailer_category: str) -> str | None:
-    text = retailer_category.casefold()
-    return next((cat for word, cat in _AISLE_WORDS if word in text), None)
 
 
 def assign_category(decision: dict, index: CatalogIndex, listing, worker=None,

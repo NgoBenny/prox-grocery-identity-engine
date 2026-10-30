@@ -38,6 +38,9 @@ def _worker(args):
 
 
 def cmd_demo(engine: Engine, args) -> int:
+    missing = sorted({lid for _, lid, _ in DEMO_STEPS} - engine.listings.keys())
+    if missing:
+        raise ValueError(f"demo walks the bundled fixtures; listings missing {missing}")
     report = []
     for title, lid, upstream in DEMO_STEPS:
         worker = FakeUpstreamWorker(*upstream) if upstream else None
@@ -116,7 +119,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    sys.stdout.reconfigure(encoding="utf-8")  # Windows consoles default to cp1252
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")  # Windows consoles default to cp1252
     try:
         if args.command == "fixtures":
             ok, message = write_or_check(args.check)

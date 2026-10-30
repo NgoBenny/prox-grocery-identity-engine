@@ -23,6 +23,8 @@ from prox_match.normalize import (
     ("1 kg", 35.274, "oz", "mass", 1),
     ("2 x 8 oz", 16, "oz", "mass", 2),
     ("1 dozen", 12, "ct", "count", 1),
+    ("18-count", 18, "ct", "count", 1),
+    ("1/2 gal", 64, "fl oz", "volume", 1),
 ])
 def test_parse_size(raw, total, unit, dimension, pack):
     size, problem = parse_size(raw)

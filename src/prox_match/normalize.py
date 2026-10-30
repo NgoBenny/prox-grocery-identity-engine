@@ -29,6 +29,19 @@ FORM_CUES = {
 CUE_FORMS = set().union(*FORM_CUES.values())  # catalog forms the cues can rule in or out
 FORM_ONLY_WORDS = {"canned", "can", "tinned", "tin", "fresh", "raw", "frozen"}  # not identity
 PET_WORDS = {"dog", "cat", "pet", "puppy", "kitten"}
+HUMAN_DOG_FOODS = {"hot", "corn"}  # "hot dog", "corn dog" are human food
+
+# Retailer aisle words -> catalog category, matched on whole words. Order matters:
+# "Canned Fish" is PANTRY.
+AISLE_WORDS = [
+    ("pet", "PET"), ("frozen", "FROZEN"), ("freezer", "FROZEN"), ("canned", "PANTRY"),
+    ("pantry", "PANTRY"), ("grocery", "PANTRY"), ("soup", "PANTRY"), ("broth", "PANTRY"),
+    ("spice", "PANTRY"), ("cereal", "BREAKFAST"), ("breakfast", "BREAKFAST"),
+    ("meat", "MEAT"), ("poultry", "MEAT"), ("seafood", "SEAFOOD"), ("fish", "SEAFOOD"),
+    ("dairy", "DAIRY"), ("egg", "DAIRY"), ("cheese", "DAIRY"), ("produce", "PRODUCE"),
+    ("fruit", "PRODUCE"), ("vegetable", "PRODUCE"), ("juice", "BEVERAGES"),
+    ("drink", "BEVERAGES"), ("beverage", "BEVERAGES"),
+]
 
 # unit -> (dimension, factor to the dimension's base unit: oz, fl oz or ct)
 UNITS = {
@@ -45,6 +58,7 @@ UNITS = {
     "ct": ("count", 1.0), "count": ("count", 1.0), "each": ("count", 1.0), "ea": ("count", 1.0),
     "dozen": ("count", 12.0),
 }
+STOPWORDS |= set(UNITS)  # "gallon", "ounce" in a title are size, not identity
 BASE_UNIT = {"mass": "oz", "volume": "fl oz", "count": "ct"}
 SIZE_TOLERANCE = 0.01  # 1%: covers 454 g vs 16 oz and 1 kg vs 35.274 oz, not 14.5 vs 14.75 oz
 
@@ -120,7 +134,8 @@ class Size:
 def parse_size(raw: str) -> tuple[Size | None, str | None]:
     """-> (Size, None) or (None, SIZE_UNKNOWN | SIZE_ZERO_INVALID | SIZE_UNPARSEABLE)."""
     text = re.sub(r"(?<!\d)\.|\.(?!\d)", " ", (raw or "").casefold())  # "fl. oz." -> "fl oz"
-    text = re.sub(r"\s+", " ", text).strip()
+    text = re.sub(r"(\d+)/([1-9]\d*)", lambda m: f"{int(m[1]) / int(m[2]):g}", text)  # 1/2 gal
+    text = re.sub(r"[\s-]+", " ", text).strip()  # "18-count" -> "18 count"
     if not text:
         return None, "SIZE_UNKNOWN"
     m = _SIZE_RE.match(text)
@@ -137,6 +152,16 @@ def parse_size(raw: str) -> tuple[Size | None, str | None]:
     unit_value = round(value * factor, 3)
     return Size(round(unit_value * pack, 3), BASE_UNIT[dimension], dimension, pack,
                 unit_value), None
+
+
+def aisle_category(retailer_category: str) -> str | None:
+    words = set(tokens(retailer_category))
+    return next((cat for word, cat in AISLE_WORDS if word in words), None)
+
+
+def mentions_pet(toks: list[str]) -> bool:
+    return any(t in PET_WORDS and not (t == "dog" and i and toks[i - 1] in HUMAN_DOG_FOODS)
+               for i, t in enumerate(toks))
 
 
 def parse_organic(toks: list[str]) -> tuple[bool, bool]:

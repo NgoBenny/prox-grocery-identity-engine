@@ -62,6 +62,7 @@ def test_abstain_with_mixed_candidates_is_unknown(engine, listing):
 
 
 @pytest.mark.parametrize("label,category", [("Canned Fish", "PANTRY"), ("Meat & Poultry", "MEAT"),
-                                            ("Pet Supplies", "PET"), ("Gadgets", None)])
+                                            ("Pet Supplies", "PET"), ("Gadgets", None),
+                                            ("Fresh Veggies", None), ("Petite Sizes", None)])
 def test_aisle_category(label, category):
     assert aisle_category(label) == category

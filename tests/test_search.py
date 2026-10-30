@@ -62,6 +62,17 @@ def test_scoring_components_exposed_and_sorted(engine):
     assert [r["score"] for r in results] == sorted((r["score"] for r in results), reverse=True)
 
 
+def test_brand_only_query(engine):
+    result = engine.search("Heritage")
+    assert result["results"] and all(
+        r["canonical_id"] in {"C104", "C125", "C126"} for r in result["results"])
+
+
+def test_branded_query_excludes_other_brands(engine):
+    ids = set(_ids(engine.search("Farmhouse chicken breast")))
+    assert "C103" in ids and "C122" not in ids
+
+
 @pytest.mark.parametrize("q,retailer", [("   ", None), ("chicken", "NoSuchMart")])
 def test_bad_queries_raise_value_error(engine, q, retailer):
     with pytest.raises(ValueError):

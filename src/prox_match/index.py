@@ -7,11 +7,12 @@ from .models import CanonicalProduct, RetailerListing
 from .normalize import (
     FORM_CUES,
     FORM_ONLY_WORDS,
-    PET_WORDS,
     STOPWORDS,
     BrandBook,
     Size,
+    aisle_category,
     contains_phrase,
+    mentions_pet,
     parse_organic,
     parse_size,
     strip_trailing_size,
@@ -116,7 +117,9 @@ class CatalogIndex:
         return Features(
             brand=brand, brand_status=status, tokens=_identity_tokens(toks),
             types=self.detect_types(toks), forms=_allowed_forms(toks),
-            pet=any(t in PET_WORDS for t in toks), organic=organic, organic_explicit=explicit,
+            # the pet aisle counts as pet evidence: a mis-shelved human item only abstains
+            pet=mentions_pet(toks) or aisle_category(listing.retailer_category) == "PET",
+            organic=organic, organic_explicit=explicit,
             size=size, size_problem=problem,
         )
 

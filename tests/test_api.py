@@ -56,9 +56,13 @@ def test_bad_input_is_a_structured_4xx(client, method, url, payload, status):
     assert "detail" in response.json()
 
 
-def test_cli_bad_input_exits_2(capsys):
+def test_cli_bad_input_exits_2(tmp_path, capsys):
     assert main(["match", "--listing-id", "NOPE"]) == 2
     assert main(["search", "-q", "chicken", "--retailer", "NoSuchMart"]) == 2
+    other = tmp_path / "other.jsonl"
+    other.write_text('{"listing_id": "Z1", "retailer": "R", "raw_name": "Milk"}\n',
+                     encoding="utf-8")
+    assert main(["demo", "--listings", str(other)]) == 2
 
 
 def test_cli_match_file(tmp_path, capsys):
