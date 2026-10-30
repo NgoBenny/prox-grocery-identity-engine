@@ -86,6 +86,33 @@ def test_loader_reports_line_number_on_bad_record(tmp_path):
         load_jsonl(bad, RetailerListing)
 
 
+def test_reviewer_style_records_load(tmp_path):
+    """Null optional fields, extra columns, a BOM and a minimal truth row must all load."""
+    listings = tmp_path / "listings.jsonl"
+    listings.write_text(
+        '{"listing_id": "X1", "retailer": "R", "raw_name": "Milk", "brand_raw": null,'
+        ' "size_raw": null, "retailer_category": null, "price_cents": 100, "upc": "123"}\n',
+        encoding="utf-8-sig",
+    )
+    (row,) = load_jsonl(listings, RetailerListing)
+    assert (row.brand_raw, row.size_raw, row.retailer_category) == ("", "", "")
+
+    truth = tmp_path / "truth.jsonl"
+    truth.write_text('{"listing_id": "X1", "expected_canonical_id": null}\n', encoding="utf-8")
+    (label,) = load_jsonl(truth, TruthLabel)
+    assert label.expected_canonical_id is None and label.split == "dev"
+
+
+def test_generator_handles_unmapped_category():
+    from prox_match.fixtures import generate_clean_listings
+
+    snack = CanonicalProduct(canonical_id="Z1", name="Pretzels, 16 oz", category="SNACKS",
+                             type="pretzel", form="dry", organic=False, size_value=16,
+                             size_unit="oz")
+    rows = generate_clean_listings([snack])
+    assert {r["retailer_category"] for r in rows} == {"Snacks"}
+
+
 def test_negative_price_rejected():
     with pytest.raises(ValueError):
         RetailerListing(listing_id="X", retailer="R", raw_name="Milk", price_cents=-1)

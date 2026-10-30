@@ -13,7 +13,9 @@ from pathlib import Path
 
 from .models import CanonicalProduct, load_jsonl
 
-FIXTURES_DIR = Path(__file__).resolve().parents[2] / "fixtures"
+# Repo checkout (editable install) first; a non-editable install falls back to ./fixtures.
+_REPO_FIXTURES = Path(__file__).resolve().parents[2] / "fixtures"
+FIXTURES_DIR = _REPO_FIXTURES if _REPO_FIXTURES.is_dir() else Path.cwd() / "fixtures"
 RETAILERS = ("FreshTown", "ValueMart", "MarketSquare")
 DEFAULT_SEED = 42
 
@@ -64,7 +66,8 @@ def generate_clean_listings(catalog: list[CanonicalProduct], seed: int = DEFAULT
                 "raw_name": rng.choice(_name_variants(product.name)),
                 "brand_raw": product.brand or "",
                 "size_raw": rng.choice(_size_variants(product.size_value, product.size_unit)),
-                "retailer_category": AISLE_LABELS[product.category][slot],
+                "retailer_category": AISLE_LABELS.get(
+                    product.category, (product.category.title(),) * 3)[slot],
                 "price_cents": rng.randint(99, 2499),
             })
     return listings
@@ -72,7 +75,7 @@ def generate_clean_listings(catalog: list[CanonicalProduct], seed: int = DEFAULT
 
 def render_listings(fixtures_dir: Path = FIXTURES_DIR, seed: int = DEFAULT_SEED) -> str:
     catalog = load_jsonl(fixtures_dir / "canonical_catalog.jsonl", CanonicalProduct)
-    tricky = (fixtures_dir / "tricky_listings.jsonl").read_text(encoding="utf-8").splitlines()
+    tricky = (fixtures_dir / "tricky_listings.jsonl").read_text(encoding="utf-8-sig").splitlines()
     tricky = [json.dumps(json.loads(line)) for line in tricky if line.strip()]
     clean = [json.dumps(row) for row in generate_clean_listings(catalog, seed)]
     return "\n".join(tricky + clean) + "\n"

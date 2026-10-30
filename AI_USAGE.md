@@ -15,3 +15,4 @@ Working log, cleaned up into the final write-up in the docs step.
 
 | Push | Skills run | Findings (freq x severity) | Action |
 |---|---|---|---|
+| Step 1 (fixtures + loader) | `/code-review`, `ponytail:ponytail-review` | null optional listing fields rejected (4x6); extra keys rejected (3x6); minimal truth file rejected (3x6); fixtures path breaks in non-editable install (2x6); generator KeyError on unknown category (2x4); UTF-8 BOM breaks both readers (2x4); bool/str price coerced (1x4) | First six fixed, with tests in `tests/test_fixtures.py`; last one filed as issue #1 |
