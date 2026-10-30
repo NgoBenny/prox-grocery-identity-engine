@@ -85,3 +85,10 @@ def test_benchmark_runs_requested_searches():
     assert result["search"]["p50_ms"] <= result["search"]["p95_ms"]
     with pytest.raises(ValueError):
         bench.run(searches=0)
+
+
+def test_benchmark_on_a_corpus_without_our_retailers(tmp_path):
+    listings = tmp_path / "listings.jsonl"
+    listings.write_text('{"listing_id": "Z1", "retailer": "OtherMart", "raw_name": "Whole Milk",'
+                        ' "size_raw": "1 gal"}\n', encoding="utf-8")
+    assert bench.run(searches=10, warmup=0, listings=listings)["search"]["count"] == 10

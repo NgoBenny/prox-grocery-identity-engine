@@ -38,7 +38,10 @@ def run(searches: int = 100, warmup: int = 10, catalog=None, listings=None, alia
     engine = Engine.from_paths(catalog, listings, aliases)
     build_ms = (time.perf_counter_ns() - start) / 1e6
 
-    plan = [QUERIES[i % len(QUERIES)] for i in range(warmup + searches)]
+    # another corpus may not have our retailers: drop filters it can't honor
+    retailers = {row.retailer for row in engine.listings.values()}
+    queries = [(q, r if r in retailers else None) for q, r in QUERIES]
+    plan = [queries[i % len(queries)] for i in range(warmup + searches)]
     for q, retailer in plan[:warmup]:
         engine.search(q, retailer)
     search_ms = []
