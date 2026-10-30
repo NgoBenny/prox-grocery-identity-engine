@@ -6,11 +6,11 @@ AI tools wrote most of the code, fixtures and docs in this repo. I directed the 
 
 | Tool | Model | Used for |
 |---|---|---|
-| ChatGPT | (web) | First implementation plan (`PROX_TRACK_C_IMPLEMENTATION_PLAN.md`, kept outside the repo) |
-| Claude Code, desktop app | Claude Opus 5.5 | Plan revision, all scaffolding, fixtures, truth-label drafts, engine code, tests, docs; ran the review skills after every step |
-| Codex | (desktop) | Independent second review of Steps 2 and 3 with its own review skills; fixed what it found |
+| ChatGPT (web) | Not recorded | First implementation plan (`PROX_TRACK_C_IMPLEMENTATION_PLAN.md`, kept outside the repo) |
+| Claude Code, desktop app | Claude Opus 5.5 | Plan revision, all scaffolding, fixtures, truth-label drafts, engine code, tests, docs; ran the review skills after implementation Steps 1–3 |
+| Codex (desktop) | Not recorded | Independent review of Steps 1–4 with its own review skills; code fixes in Steps 2–3 and documentation corrections in Step 4 |
 
-Review skills used at every step's review gate: `/code-review` and `ponytail:ponytail-review` (Claude Code); `agent-skills:code-review-and-quality` and `ponytail:ponytail-review` (Codex).
+Review skills used: `/code-review` and `ponytail:ponytail-review` (Claude Code, implementation Steps 1–3); `agent-skills:code-review-and-quality` and `ponytail:ponytail-review` (Codex, including the Step 4 documentation review).
 
 **Generated components:** every file in `src/`, `tests/`, `scripts/`, the fixtures and the docs was drafted by Claude Code, except the Codex fixes listed below. I reviewed the 38 truth labels and the matching policy before they were used, and edited the time log.
 
@@ -55,10 +55,10 @@ Review skills used at every step's review gate: `/code-review` and `ponytail:pon
 - **Track C**, and the stack: offline rules plus lexical retrieval, no LLM, no database.
 - **Organic policy:** a listing that doesn't say organic is treated as non-organic, with lower confidence, rather than abstaining on most produce.
 - **C107/C108:** approved always abstaining on the duplicate pair, with a catalog merge as the real fix.
-- **Truth integrity:** labels committed before any matcher code; I reviewed and approved all 38 before the engine existed; a dev/held-out split, with held-out scored once after the policy was frozen (`899700d`).
+- **Truth integrity:** labels committed before any matcher code; I reviewed and approved all 38 before the engine existed; a dev/held-out split, with the first held-out evaluation after the policy was frozen (`899700d`). Later reproducibility checks did not drive policy tuning.
 - **Review discipline:** the frequency × severity rule for every review finding, branch + PR per step, regular merge commits so the history stays auditable, and a second reviewer from a different tool.
 - **Matching policy:** approved the 0.70 accept / 0.08 margin / 0.90 auto-approve thresholds and the veto list at the Step 2 checkpoint.
-- **Time accounting:** reviewed and edited every row of `TIME_LOG.md`.
+- **Time accounting:** set planning time to 0.45 h; `TIME_LOG.md` records the remaining estimates as pending candidate confirmation, with Step 4 hours still to add.
 
 No private conversations or personal data are included; the prompts above are quoted from my own messages.
 
@@ -71,3 +71,4 @@ No private conversations or personal data are included; the prompts above are qu
 | Step 2 independent Codex review | `agent-skills:code-review-and-quality`, `ponytail:ponytail-review` | organic search falls back to conventional spinach at ValueMart (4x5); negative sizes become positive (`-16 oz` matches 16 oz cheddar) (2x5) | Both fixed in shared code (`015bc04`); four regression cases failed before the fixes; 133 tests passed afterward |
 | Step 3 (evaluate, benchmark) | `/code-review`, `ponytail:ponytail-review` | benchmark crashes on a corpus without our retailer names (2x3); duplicate truth rows double-counted (1x3); report `command` uses `sys.argv` (2x1); negative `--warmup` (1x2) | First fixed with a test; other three filed as issue #5. Ponytail review: no findings |
 | Step 3 independent Codex review | `agent-skills:code-review-and-quality`, `ponytail:ponytail-review` | evaluation output can overwrite its truth input (2x8) | Fixed (`80aedb5`) with a regression test; 142 tests pass; held-out not rerun |
+| Step 4 independent Codex review | `agent-skills:code-review-and-quality`, `ponytail:ponytail-review` | sample JSON drops a real type veto (10x3); architecture, category behavior and CLI claims differ from implementation (10x3); scale proposal described as current behavior and costs overclaimed (10x3); recording reruns held-out and overwrites committed reports (4x3); authorship and evaluation-history wording overstates the record (10x2) | Documentation corrected. All three JSON excerpts checked against live decisions/search; local links, CLI flags, corpus counts, saved truth hash and cost arithmetic verified with assertions. No application code, truth labels or saved reports changed; held-out not rescored. |

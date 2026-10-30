@@ -15,7 +15,7 @@ weekly retailer feeds
 ```
 
 - **Incremental matching.** The decision key is `(listing content hash, catalog version, policy version)`. Assume 10–20% of listings change in a week, so 1–2M matches instead of 10M. A catalog or policy change re-matches only the affected types or categories.
-- **Partitioning.** Shard by catalog category. The type and category gates already mean a listing only competes with its own category's postings, so shards are independent jobs with per-retailer concurrency limits and queue backpressure.
+- **Partitioning (proposed).** Shard the catalog postings by category, with per-retailer concurrency limits and queue backpressure. Matching currently retrieves across the whole catalog; its type/form/pet vetoes and search's category gate are not category-sharded retrieval. A future router must search every plausible shard when category is uncertain, rather than trusting a noisy retailer aisle. For example, chicken words can refer to MEAT, PANTRY, FROZEN or PET products.
 - **Retrieval at scale.** The in-memory postings dict becomes a per-shard inverted index (a search engine or Postgres trigram/GIN). The current linear fuzzy vocabulary scan ([#3](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/3)) is the first thing to replace.
 
 ## Capacity arithmetic
@@ -23,9 +23,9 @@ weekly retailer feeds
 | Quantity | Value | Basis |
 |---|---|---|
 | Match latency per listing | 0.28 ms p50 | **measured** (46-ID catalog) |
-| Assumed latency at full catalog size (~100k IDs, indexed retrieval) | 3 ms | **assumption**: 10× for bigger postings |
+| Assumed latency at full catalog size (~100k IDs, indexed retrieval) | 3 ms | **assumption**: roughly 10× the small-corpus match latency; unvalidated |
 | Full 10M re-match | 10M × 3 ms = 8.3 CPU-hours | arithmetic |
-| Weekly incremental (2M changed) | 1.7 CPU-hours; ~6 min on 16 cores | arithmetic |
+| Weekly incremental (2M changed) | 1.7 CPU-hours; ~6 min on 16 cores | arithmetic; ideal parallelism, requires multiple processes for this Python workload |
 | Average ingest rate | 10M / 7 days ≈ 16.5 listings/s; plan for 10× peak on feed day | arithmetic |
 | Raw snapshot | 10M × 0.5 KB ≈ 5 GB / week | **assumption**: 0.5 KB per listing |
 | Search p50 / p95 | 0.43 / 0.68 ms | **measured**, 100 listings; not a 10M claim |
@@ -41,7 +41,9 @@ weekly cost = matched listings × CPU-s per listing × $ per CPU-s
 
 With **assumed** rates of $0.04 per CPU-hour, $0.02 per GB-month, and $0.15 per review case (about 30 s of a $18/h reviewer): compute ≈ 1.7 h × $0.04 ≈ **$0.07**, storage (one year of 5 GB snapshots, 260 GB) ≈ **$1.20**, review at an assumed 3% of 2M changed listings = 60k cases ≈ **$9,000/week**.
 
-**The bottleneck is human review, not compute.** Every point of abstention rate costs about $3,000 a week, so the engineering work goes into shrinking the queue safely, not into faster CPUs. On our corpus, 3 of 62 clean listings abstain (all one catalog duplicate) and 16 of 100 overall, but that overall number is inflated by deliberate traps.
+These are variable-cost estimates, not a deployment bill: they exclude feed I/O, orchestration, search serving, index storage, minimum instance charges, replication and operational overhead. The 3 ms full-catalog latency and parallel speedup need a representative load test.
+
+**Under these assumptions, human review dominates the modeled cost.** Every percentage point of changed listings sent to review costs about $3,000 a week. On our corpus, 3 of 62 clean listings abstain (all one catalog duplicate), 16 of 100 overall abstain, and 22 of 100 carry a review flag. The flagged count includes low-confidence matches as well as abstentions; deliberate traps make this corpus unsuitable for estimating a production queue rate.
 
 ## Review queue priority
 

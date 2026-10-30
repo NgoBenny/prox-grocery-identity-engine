@@ -2,7 +2,7 @@
 
 Recording: _link to be added_
 
-Record the terminal (and one browser tab for the API). Every number on screen comes from a live run; nothing is pre-recorded. Commands are from the repo root.
+Record the terminal (and one browser tab for the API). Run the commands live; show the held-out numbers from the committed evaluation report and identify them as saved results. Commands are from the repo root.
 
 ## 0:00–0:20 · Setup
 
@@ -10,12 +10,12 @@ Record the terminal (and one browser tab for the API). Every number on screen co
 uv sync --locked
 ```
 
-Say: offline Python engine; synthetic data; no API keys, no LLM, no network. Show the repo tree: `src/`, `fixtures/`, `tests/`, `scripts/`.
+Say: offline Python engine; synthetic data; no API keys or LLM; no external network calls during matching. Dependency installation may need network access. Show the repo tree: `src/`, `fixtures/`, `tests/`, `scripts/`.
 
 ## 0:20–1:15 · Core flow
 
 ```bash
-uv run prox-match demo
+uv run prox-match demo --output outputs/recording_demo.json
 ```
 
 Point at four sections of the output:
@@ -39,21 +39,23 @@ Say: C107 "Whole Milk, 1 gal" and C108 "Whole Milk, 128 fl oz" are the same prod
 uv run uvicorn prox_match.api:app --port 8000
 ```
 
+Keep the server running in a second terminal so the recording terminal is free for later commands.
+
 Open `http://127.0.0.1:8000/search?q=chicken%20breast&retailer=FreshTown`. Show that only MEAT and FROZEN chicken come back, plain breast ranks first, and the `components` show why. Broth, dog food and the seasoning rub are absent. (Optional: `/docs`.)
 
 ## 2:15–2:50 · Real tests and evaluation
 
 ```bash
 uv run pytest -q
-uv run prox-match evaluate
+uv run prox-match evaluate --split dev --output outputs/recording_dev_evaluation.json
 ```
 
-Show the passing test count, then the confusion counts per split: dev 28/28 and held-out 10/10, with no false matches, plus the one category miss (T004, which correctly abstains but gets UNKNOWN instead of PANTRY). Say: the policy was committed before held-out was scored once, and 38 self-written labels can't support statistical claims.
+Show the passing test count and live dev counts: 28/28, with no false matches and one category miss (T004, which correctly abstains but gets UNKNOWN instead of PANTRY). Open the committed `outputs/evaluation_report.json` to show the saved held-out result: 10/10, including six correct abstentions. Say: the policy was committed before the first held-out evaluation and was not tuned on that result. The same AI-assisted workflow produced these 38 labels and the rules, so this is a consistency check, not evidence of general accuracy. The recording does not rescore held-out labels or overwrite the committed reports.
 
 ## 2:50–3:15 · Performance and scale
 
 ```bash
-uv run prox-match benchmark --searches 100
+uv run prox-match benchmark --searches 100 --output outputs/recording_benchmark.json
 ```
 
-Read the measured p50/p95 from the screen. Close with SCALE_AND_COST.md: incremental matching by content hash, sharding by category, and the real bottleneck at 10M listings is the human review queue, not compute.
+Read the measured p50/p95 from the screen. Close with SCALE_AND_COST.md: proposed incremental matching by content hash and category shards. Under the document's assumptions, human review dominates the modeled cost; full-scale throughput has not been measured.

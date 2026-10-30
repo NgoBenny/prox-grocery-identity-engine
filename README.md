@@ -1,8 +1,8 @@
 # prox-grocery-identity-engine
 
-An offline, explainable engine that maps synthetic retailer grocery listings to canonical product IDs, or **abstains** when the evidence is weak or conflicting. It also keeps the approved catalog category safe from noisy retailers and an uncertain upstream AI worker, and serves a ranked `/search` that never offers broth or dog food for "chicken breast".
+An offline, explainable engine that maps synthetic retailer grocery listings to canonical product IDs, or **abstains** when the evidence is weak or conflicting. It also keeps the approved catalog category safe from noisy retailers and an uncertain upstream AI worker. Its ranked `/search` excludes broth and dog food from "chicken breast" results in the bundled fixtures and regression tests.
 
-Prox Software Engineering Intern assessment, **Track C: Search, Product Matching & Applied AI**. All data is synthetic. No network calls, paid APIs, LLMs or secrets.
+Prox Software Engineering Intern assessment, **Track C: Search, Product Matching & Applied AI**. All data is synthetic. The engine makes no external network calls and needs no paid APIs, LLMs or secrets. Installing dependencies may require network access.
 
 ## Quick start
 
@@ -26,7 +26,7 @@ uv run prox-match fixtures --check                   # regenerate-and-compare fi
 uv run uvicorn prox_match.api:app --port 8000        # HTTP API, docs at http://127.0.0.1:8000/docs
 ```
 
-Every command takes `--catalog`, `--listings` and `--aliases`, so it runs against any catalog and listings, not just ours. Without uv: `python -m venv .venv`, activate it, `pip install -e . pytest httpx`, then run the same commands without `uv run`.
+The `match`, `search`, `evaluate`, `benchmark` and `demo` subcommands take `--catalog`, `--listings` and `--aliases`. Custom files must follow the documented record formats; the demo also requires its bundled T-series listing IDs. `fixtures` uses the bundled fixture paths, and the uvicorn command starts the API with the default data. Without uv: `python -m venv .venv`, activate it, `pip install -e . pytest httpx`, then run the same commands without `uv run`.
 
 ## Architecture
 
@@ -36,12 +36,13 @@ flowchart TD
     V --> N[normalize: Unicode, brands, units, multipacks, organic, form/pet cues]
     N --> I[CatalogIndex: identity tokens, exact signatures, inverted index, duplicate clusters]
     L[Listing] --> N
-    I --> S1{Stage 1: exactly one exact signature?}
+    I --> RET[Retrieve candidates and exact-signature hits]
+    RET --> VETO[Score candidates and apply hard vetoes to both stages]
+    VETO --> S1{Stage 1: exactly one non-vetoed exact signature?}
     S1 -->|yes| ACC[Match]
     S1 -->|several| AB[ABSTAIN + top 3 + reasons]
-    S1 -->|none| S2[Stage 2: retrieve candidates, coverage rerank, RapidFuzz typo match]
-    S2 --> VETO[Hard vetoes: brand, type, form, pet, organic, size, mass vs volume, multipack]
-    VETO --> TH{score >= 0.70 and margin >= 0.08?}
+    S1 -->|none| S2[Stage 2: rank non-vetoed candidates]
+    S2 --> TH{score >= 0.70 and margin >= 0.08?}
     TH -->|yes| ACC
     TH -->|no| AB
     ACC --> CAT[Category guard: catalog category wins over retailer aisle and upstream AI]
@@ -81,17 +82,17 @@ Generation rules and record formats: [fixtures/README.md](fixtures/README.md).
 ## How matching decides
 
 1. **Normalize.** NFKD + accent stripping + casefold; brands only through an explicit allowlist (`Farm House` → Farmhouse, `Ocean Cache` → unknown); sizes to a base unit per dimension (mass oz, volume fl oz, count ct) with pack count kept; no organic word means non-organic (a decided policy, with lower confidence).
-2. **Stage 1, exact signature:** brand, organic, dimension, total size, pack count and identity words. Exactly one hit → match. Several hits → `CATALOG_DUPLICATE` and ABSTAIN.
+2. **Stage 1, exact signature:** brand, organic, dimension, total size, pack count and identity words. Exactly one non-vetoed hit → match. Several non-vetoed hits → `CATALOG_DUPLICATE` and ABSTAIN. Hard vetoes apply to exact hits too.
 3. **Stage 2, retrieve and rerank.** Candidates come from the inverted index. Score = (0.75 × share of catalog words found + 0.25 × share of listing words explained) × brand factor × organic factor.
 4. **Hard vetoes** can't be outscored: approved brand ≠ catalog brand, unknown brand vs a branded item, a different product type ("oat milk" hides "milk"), form cues (canned / fresh / frozen / broth / steak), pet vs human food, organic conflict, size mismatch (1% tolerance), mass vs volume, multipack vs single.
-5. **Accept** only if the best non-vetoed score is ≥ 0.70 and beats the runner-up by ≥ 0.08. Ties never get broken by ID. A missing, zero or unreadable size always abstains.
+5. **Accept a reranked match** only if the best non-vetoed score is ≥ 0.70 and beats the runner-up by ≥ 0.08. A unique non-vetoed exact signature is accepted by Stage 1 instead. Ties in reranking never get broken by ID. A missing, zero or unreadable size always abstains.
 6. **Auto-approve** only at ≥ 0.90. Lower matches keep their ID but set `reviewer_flag`.
 
 `confidence` is a heuristic ranking score, **not a calibrated probability**.
 
 ### Category guard
 
-The catalog category of a matched ID always wins. The simulated upstream AI worker can return `CATEGORY_UNCERTAIN`, time out (a real 0.2 s deadline) or crash, and the category doesn't change (`APPROVED_CATEGORY_PRESERVED`). A confident disagreement sets `reviewer_flag`. Only an explicit `conflict_review=True` call, the human-review path, applies the upstream category. Abstained listings get the category their plausible candidates agree on, otherwise `UNKNOWN`.
+The catalog category of a matched ID wins by default. The simulated upstream AI worker can return `CATEGORY_UNCERTAIN`, time out (a real 0.2 s deadline) or crash, and the category doesn't change (`APPROVED_CATEGORY_PRESERVED`). A confident disagreement sets `reviewer_flag`. For a matched ID, only an explicit `conflict_review=True` call, the human-review path, applies the upstream category. Abstained listings get the category their plausible candidates agree on, otherwise a confident upstream suggestion if provided, otherwise `UNKNOWN`; they remain flagged for review.
 
 ## Sample output (real runs)
 
@@ -111,7 +112,7 @@ The catalog category of a matched ID always wins. The simulated upstream AI work
   "top_candidates": [
     {"canonical_id": "C104", "score": 0.95, "vetoes": []},
     {"canonical_id": "C126", "canonical_name": "Heritage Low Sodium Chicken Broth, 32 fl oz", "score": 0.5938, "vetoes": []},
-    {"canonical_id": "C125", "canonical_name": "Heritage Vegetable Broth, 32 fl oz", "score": 0.475, "vetoes": []}
+    {"canonical_id": "C125", "canonical_name": "Heritage Vegetable Broth, 32 fl oz", "score": 0.475, "vetoes": ["TYPE_MISMATCH"]}
   ]
 }
 ```
@@ -153,7 +154,7 @@ Full runs: [outputs/demo_output.json](outputs/demo_output.json), [outputs/evalua
 
 ## Results
 
-From `prox-match evaluate`. The matching policy was committed (`899700d`) before the held-out split was scored, and the held-out split was scored once.
+From the saved `prox-match evaluate` report. The matching policy was committed (`899700d`) before the first held-out evaluation. That result was used as the final policy check; later reproducibility checks did not drive policy tuning.
 
 | Split | n | TP | TN | FP | FN | Precision | Recall | Exact-ID acc. | Abstention | High-conf FP | Category error |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -162,17 +163,19 @@ From `prox-match evaluate`. The matching policy was committed (`899700d`) before
 
 A wrong-ID prediction counts as both an FP and an FN. Zero denominators report `null`, not 100%.
 
-**Read these numbers with care.** I wrote both the labels and the rules, and 38 cases is far too few for statistical claims. A perfect score shows the rules are internally consistent on their intended traps, not production accuracy. The one miss: T004 ("Ocean Cache" false brand) correctly abstains, but its candidates disagree on category, so it gets `UNKNOWN` instead of PANTRY.
+**Read these numbers with care.** The same AI-assisted workflow produced both the labels and the rules; I reviewed the labels and approved the policy. These 38 cases are far too few for statistical claims. A perfect score shows the rules are internally consistent on their intended traps, not production accuracy. The one miss: T004 ("Ocean Cache" false brand) correctly abstains, but its candidates disagree on category, so it gets `UNKNOWN` instead of PANTRY.
 
 Across all 100 listings, 16 abstain and 22 carry `reviewer_flag`. Of the 62 clean generated listings, 3 abstain, all of them whole milk hitting the C107/C108 duplicate.
 
-**Benchmark** (`prox-match benchmark`, Windows 11 laptop, AMD Ryzen with 12 logical CPUs, Python 3.12.14): engine build (load, index, match all 100 listings, search index) **39 ms**; **100 searches p50 0.43 ms, p95 0.68 ms** after 10 warm-ups; single-listing match p50 0.28 ms. Percentiles are nearest-rank. **Cache policy:** no result cache; the index is immutable and built at startup, and decisions are computed once at load, so search never re-runs the matcher. Timings vary run to run (two other runs: p50 0.39–0.40 ms, p95 0.50–0.52 ms).
+**Benchmark** (`prox-match benchmark`, Windows 11 laptop, AMD64 with 12 logical CPUs, Python 3.12.14): engine build (load, index, match all 100 listings, search index) **39 ms**; **100 searches p50 0.43 ms, p95 0.68 ms** after 10 warm-ups; single-listing match p50 0.28 ms. Percentiles are nearest-rank. **Cache policy:** no result cache; the index is built at startup and treated as read-only, and decisions are computed once at load, so search never re-runs the matcher. Timings vary run to run; these are small-corpus measurements.
 
 ## Human review: what goes there, what never auto-approves
 
 **Sent to review** (`reviewer_flag: true`): every ABSTAIN, with its top 3 candidates and veto reasons; any match below 0.90; any match where the upstream AI confidently disagrees with the catalog category; any catalog duplicate cluster (C107/C108 should be merged once in review, not decided per listing).
 
-**Never auto-approved:**
+**Blocked from auto-approval when the normalized evidence establishes the conflict below.** These checks depend on the recognized words and units; they do not guarantee detection of every possible phrasing.
+
+**Never auto-approved under those checks:**
 - a match across a form, type or pet-vs-human boundary (canned ↔ fresh, broth ↔ meat, dog food ↔ chicken)
 - an explicit organic conflict
 - weight vs fluid volume, a size mismatch, or a missing or zero size
@@ -209,8 +212,8 @@ Across all 100 listings, 16 abstain and 22 carry `reviewer_flag`. Of the 62 clea
 ## Known limitations
 
 - The truth set is small and written by the same person who wrote the rules. Prox's unpublished cases are the real test.
-- Form cues, pet words, aisle words and size descriptors are hand-written English word lists. New phrasings ("tinned in oil", "pup") need list updates.
-- Product types come only from the catalog's `type` field. A listing that never names its type (e.g. "Chicken Jerky Treats" without "dog treats") abstains.
+- Form cues, pet words, aisle words and size descriptors are hand-written English word lists. Unrecognized synonyms (for example, "pup" as pet evidence) may need list updates.
+- Product type phrases come from the catalog's `type` field. When no phrase is detected, matching falls back to lexical evidence and the remaining vetoes; abstention is not guaranteed. "Chicken Jerky Treats" without pet evidence abstains in the bundled catalog.
 - Generic unbranded listings of branded products ("Chicken Breast 1 lb", no brand) usually abstain, because of the missing-brand penalty.
 - `confidence` is not calibrated, and the 0.70 / 0.08 / 0.90 thresholds were set on 28 dev cases.
 - Open low-score findings: [#1](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/1), [#2](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/2), [#3](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/3), [#5](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/5).
