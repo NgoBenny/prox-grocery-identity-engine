@@ -211,7 +211,7 @@ Across all 100 listings, 16 abstain and 22 carry `reviewer_flag`. Of the 62 clea
 
 ## Known limitations
 
-- The truth set is small and written by the same person who wrote the rules. Prox's unpublished cases are the real test.
+- The truth set is small and came from the same AI-assisted workflow as the rules (labels reviewed by me). Prox's unpublished cases are the real test.
 - Form cues, pet words, aisle words and size descriptors are hand-written English word lists. Unrecognized synonyms (for example, "pup" as pet evidence) may need list updates.
 - Product type phrases come from the catalog's `type` field. When no phrase is detected, matching falls back to lexical evidence and the remaining vetoes; abstention is not guaranteed. "Chicken Jerky Treats" without pet evidence abstains in the bundled catalog.
 - Generic unbranded listings of branded products ("Chicken Breast 1 lb", no brand) usually abstain, because of the missing-brand penalty.
