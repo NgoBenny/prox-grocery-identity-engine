@@ -1,0 +1,46 @@
+{"canonical_id": "C101", "name": "Ocean Catch Solid White Tuna, canned 5 oz", "brand": "Ocean Catch", "category": "PANTRY", "type": "tuna", "form": "canned", "organic": false, "size_value": 5, "size_unit": "oz"}
+{"canonical_id": "C102", "name": "Atlantic Fresh Tuna Steak, raw 1 lb", "brand": "Atlantic Fresh", "category": "SEAFOOD", "type": "tuna", "form": "fresh", "organic": false, "size_value": 16, "size_unit": "oz"}
+{"canonical_id": "C103", "name": "Farmhouse Chicken Breast, boneless 1 lb", "brand": "Farmhouse", "category": "MEAT", "type": "chicken", "form": "fresh", "organic": false, "size_value": 16, "size_unit": "oz"}
+{"canonical_id": "C104", "name": "Heritage Chicken Broth, 32 fl oz", "brand": "Heritage", "category": "PANTRY", "type": "chicken", "form": "shelf-stable broth", "organic": false, "size_value": 32, "size_unit": "fl oz"}
+{"canonical_id": "C105", "name": "Fresh Salmon Fillet, 1 lb", "brand": null, "category": "SEAFOOD", "type": "salmon", "form": "fresh", "organic": false, "size_value": 16, "size_unit": "oz"}
+{"canonical_id": "C106", "name": "Tinned Pink Salmon, 14.75 oz", "brand": null, "category": "PANTRY", "type": "salmon", "form": "canned", "organic": false, "size_value": 14.75, "size_unit": "oz"}
+{"canonical_id": "C107", "name": "Whole Milk, 1 gal", "brand": null, "category": "DAIRY", "type": "milk", "form": "liquid", "organic": false, "size_value": 128, "size_unit": "fl oz"}
+{"canonical_id": "C108", "name": "Whole Milk, 128 fl oz", "brand": null, "category": "DAIRY", "type": "milk", "form": "liquid", "organic": false, "size_value": 128, "size_unit": "fl oz"}
+{"canonical_id": "C109", "name": "Organic Baby Spinach, 5 oz", "brand": null, "category": "PRODUCE", "type": "spinach", "form": "fresh", "organic": true, "size_value": 5, "size_unit": "oz"}
+{"canonical_id": "C110", "name": "Baby Spinach, 5 oz", "brand": null, "category": "PRODUCE", "type": "spinach", "form": "fresh", "organic": false, "size_value": 5, "size_unit": "oz"}
+{"canonical_id": "C111", "name": "Chicken Flavored Dog Food, 12 lb", "brand": null, "category": "PET", "type": "dog food", "form": "dry", "organic": false, "size_value": 192, "size_unit": "oz"}
+{"canonical_id": "C112", "name": "Honey Nut Oat Cereal, family size 18.8 oz", "brand": null, "category": "BREAKFAST", "type": "cereal", "form": "dry", "organic": false, "size_value": 18.8, "size_unit": "oz"}
+{"canonical_id": "C113", "name": "Oat Milk, Original 64 fl oz", "brand": null, "category": "DAIRY", "type": "oat milk", "form": "liquid", "organic": false, "size_value": 64, "size_unit": "fl oz"}
+{"canonical_id": "C114", "name": "Almond Milk, Unsweetened 64 fl oz", "brand": null, "category": "DAIRY", "type": "almond milk", "form": "liquid", "organic": false, "size_value": 64, "size_unit": "fl oz"}
+{"canonical_id": "C115", "name": "2% Reduced Fat Milk, 1 gal", "brand": null, "category": "DAIRY", "type": "milk", "form": "liquid", "organic": false, "size_value": 128, "size_unit": "fl oz"}
+{"canonical_id": "C116", "name": "Organic Whole Milk, 64 fl oz", "brand": null, "category": "DAIRY", "type": "milk", "form": "liquid", "organic": true, "size_value": 64, "size_unit": "fl oz"}
+{"canonical_id": "C117", "name": "Large Brown Eggs, 12 ct", "brand": null, "category": "DAIRY", "type": "eggs", "form": "fresh", "organic": false, "size_value": 12, "size_unit": "ct"}
+{"canonical_id": "C118", "name": "Large Brown Eggs, 18 ct", "brand": null, "category": "DAIRY", "type": "eggs", "form": "fresh", "organic": false, "size_value": 18, "size_unit": "ct"}
+{"canonical_id": "C119", "name": "Farmhouse Ground Beef 80/20, 1 lb", "brand": "Farmhouse", "category": "MEAT", "type": "beef", "form": "fresh", "organic": false, "size_value": 16, "size_unit": "oz"}
+{"canonical_id": "C120", "name": "Farmhouse Chicken Thighs, boneless 1.5 lb", "brand": "Farmhouse", "category": "MEAT", "type": "chicken", "form": "fresh", "organic": false, "size_value": 24, "size_unit": "oz"}
+{"canonical_id": "C121", "name": "Farmhouse Turkey Breast, 1 lb", "brand": "Farmhouse", "category": "MEAT", "type": "turkey", "form": "fresh", "organic": false, "size_value": 16, "size_unit": "oz"}
+{"canonical_id": "C122", "name": "Golden Crisp Breaded Chicken Breast Nuggets, 2 lb", "brand": "Golden Crisp", "category": "FROZEN", "type": "chicken", "form": "frozen", "organic": false, "size_value": 32, "size_unit": "oz"}
+{"canonical_id": "C123", "name": "Frozen Atlantic Salmon Fillets, 1 lb", "brand": null, "category": "FROZEN", "type": "salmon", "form": "frozen", "organic": false, "size_value": 16, "size_unit": "oz"}
+{"canonical_id": "C124", "name": "Ocean Catch Chunk Light Tuna, canned 5 oz", "brand": "Ocean Catch", "category": "PANTRY", "type": "tuna", "form": "canned", "organic": false, "size_value": 5, "size_unit": "oz"}
+{"canonical_id": "C125", "name": "Heritage Vegetable Broth, 32 fl oz", "brand": "Heritage", "category": "PANTRY", "type": "vegetable", "form": "shelf-stable broth", "organic": false, "size_value": 32, "size_unit": "fl oz"}
+{"canonical_id": "C126", "name": "Heritage Low Sodium Chicken Broth, 32 fl oz", "brand": "Heritage", "category": "PANTRY", "type": "chicken", "form": "shelf-stable broth", "organic": false, "size_value": 32, "size_unit": "fl oz"}
+{"canonical_id": "C127", "name": "Valley Creamery Sharp Cheddar Cheese, 8 oz", "brand": "Valley Creamery", "category": "DAIRY", "type": "cheese", "form": "refrigerated", "organic": false, "size_value": 8, "size_unit": "oz"}
+{"canonical_id": "C128", "name": "Valley Creamery Sharp Cheddar Cheese, 16 oz", "brand": "Valley Creamery", "category": "DAIRY", "type": "cheese", "form": "refrigerated", "organic": false, "size_value": 16, "size_unit": "oz"}
+{"canonical_id": "C129", "name": "Meadowlark Plain Greek Yogurt, 32 oz", "brand": "Meadowlark", "category": "DAIRY", "type": "yogurt", "form": "refrigerated", "organic": false, "size_value": 32, "size_unit": "oz"}
+{"canonical_id": "C130", "name": "Meadowlark Plain Yogurt, whole milk 32 oz", "brand": "Meadowlark", "category": "DAIRY", "type": "yogurt", "form": "refrigerated", "organic": false, "size_value": 32, "size_unit": "oz"}
+{"canonical_id": "C131", "name": "Valley Creamery Unsalted Butter, 16 oz", "brand": "Valley Creamery", "category": "DAIRY", "type": "butter", "form": "refrigerated", "organic": false, "size_value": 16, "size_unit": "oz"}
+{"canonical_id": "C132", "name": "Valley Creamery Salted Butter, 16 oz", "brand": "Valley Creamery", "category": "DAIRY", "type": "butter", "form": "refrigerated", "organic": false, "size_value": 16, "size_unit": "oz"}
+{"canonical_id": "C133", "name": "Organic Bananas, 2 lb bag", "brand": null, "category": "PRODUCE", "type": "banana", "form": "fresh", "organic": true, "size_value": 32, "size_unit": "oz"}
+{"canonical_id": "C134", "name": "Bananas, 2 lb bag", "brand": null, "category": "PRODUCE", "type": "banana", "form": "fresh", "organic": false, "size_value": 32, "size_unit": "oz"}
+{"canonical_id": "C135", "name": "Nutty Acres Smooth Peanut Butter, 16 oz", "brand": "Nutty Acres", "category": "PANTRY", "type": "peanut butter", "form": "jar", "organic": false, "size_value": 16, "size_unit": "oz"}
+{"canonical_id": "C136", "name": "Nutty Acres Crunchy Peanut Butter, 16 oz", "brand": "Nutty Acres", "category": "PANTRY", "type": "peanut butter", "form": "jar", "organic": false, "size_value": 16, "size_unit": "oz"}
+{"canonical_id": "C137", "name": "Sunvine Diced Tomatoes, canned 14.5 oz", "brand": "Sunvine", "category": "PANTRY", "type": "tomato", "form": "canned", "organic": false, "size_value": 14.5, "size_unit": "oz"}
+{"canonical_id": "C138", "name": "Sunvine Diced Tomatoes, canned 28 oz", "brand": "Sunvine", "category": "PANTRY", "type": "tomato", "form": "canned", "organic": false, "size_value": 28, "size_unit": "oz"}
+{"canonical_id": "C139", "name": "Long Grain White Rice, 2 lb", "brand": null, "category": "PANTRY", "type": "rice", "form": "dry", "organic": false, "size_value": 32, "size_unit": "oz"}
+{"canonical_id": "C140", "name": "Brown Rice, 2 lb", "brand": null, "category": "PANTRY", "type": "rice", "form": "dry", "organic": false, "size_value": 32, "size_unit": "oz"}
+{"canonical_id": "C141", "name": "Chocolate Oat Cereal, 18.8 oz", "brand": null, "category": "BREAKFAST", "type": "cereal", "form": "dry", "organic": false, "size_value": 18.8, "size_unit": "oz"}
+{"canonical_id": "C142", "name": "Honey Nut Oat Cereal, 12 oz", "brand": null, "category": "BREAKFAST", "type": "cereal", "form": "dry", "organic": false, "size_value": 12, "size_unit": "oz"}
+{"canonical_id": "C143", "name": "Chicken Jerky Dog Treats, 16 oz", "brand": null, "category": "PET", "type": "dog treats", "form": "dry", "organic": false, "size_value": 16, "size_unit": "oz"}
+{"canonical_id": "C144", "name": "Salmon Pate Cat Food, canned 3 oz", "brand": null, "category": "PET", "type": "cat food", "form": "canned", "organic": false, "size_value": 3, "size_unit": "oz"}
+{"canonical_id": "C145", "name": "Orange Juice, not from concentrate 52 fl oz", "brand": null, "category": "BEVERAGES", "type": "orange juice", "form": "liquid", "organic": false, "size_value": 52, "size_unit": "fl oz"}
+{"canonical_id": "C146", "name": "Apple Juice, 64 fl oz", "brand": null, "category": "BEVERAGES", "type": "apple juice", "form": "liquid", "organic": false, "size_value": 64, "size_unit": "fl oz"}
