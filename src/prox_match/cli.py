@@ -104,10 +104,13 @@ def cmd_evaluate(engine: Engine, args) -> int:
               f"abstention={m['abstention_rate']} "
               f"high_conf_fp={m['high_confidence_false_positive_rate']} "
               f"category_error={m['category_error_rate']}")
-        for kind in ("false_matches", "missed_matches", "category_errors"):
+        for kind in ("false_matches", "missed_matches"):
             for row in s["report"][kind]:
                 print(f"   {kind}: {row['listing_id']} expected {row['expected']} "
                       f"got {row['predicted']} ({', '.join(row['reason_codes'])})")
+        for row in s["report"]["category_errors"]:
+            print(f"   category_error: {row['listing_id']} expected {row['expected_category']} "
+                  f"got {row['assigned_category']}")
     print(f"wrote {args.output}")
     return 0
 
