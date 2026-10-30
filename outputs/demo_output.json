@@ -1,0 +1,947 @@
+[
+  {
+    "title": "Positive match: brand alias 'Farm House' + '1 LB' = 16 oz",
+    "decision": {
+      "listing_id": "T007",
+      "canonical_id": "C103",
+      "canonical_name": "Farmhouse Chicken Breast, boneless 1 lb",
+      "assigned_category": "MEAT",
+      "normalized_size": {
+        "total_value": 16.0,
+        "unit": "oz",
+        "dimension": "mass",
+        "pack_count": 1,
+        "unit_value": 16.0
+      },
+      "match_stage": "exact_signature",
+      "confidence": 0.95,
+      "reason_codes": [
+        "EXACT_SIGNATURE",
+        "BRAND_ALIAS",
+        "ORGANIC_INFERRED"
+      ],
+      "reviewer_flag": false,
+      "top_candidates": [
+        {
+          "canonical_id": "C103",
+          "canonical_name": "Farmhouse Chicken Breast, boneless 1 lb",
+          "score": 0.95,
+          "components": {
+            "canonical_coverage": 1.0,
+            "listing_coverage": 1.0,
+            "lexical": 1.0,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [],
+          "notes": []
+        },
+        {
+          "canonical_id": "C120",
+          "canonical_name": "Farmhouse Chicken Thighs, boneless 1.5 lb",
+          "score": 0.6333,
+          "components": {
+            "canonical_coverage": 0.6667,
+            "listing_coverage": 0.6667,
+            "lexical": 0.6667,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "SIZE_MISMATCH"
+          ],
+          "notes": []
+        },
+        {
+          "canonical_id": "C122",
+          "canonical_name": "Golden Crisp Breaded Chicken Breast Nuggets, 2 lb",
+          "score": 0.5146,
+          "components": {
+            "canonical_coverage": 0.5,
+            "listing_coverage": 0.6667,
+            "lexical": 0.5417,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "BRAND_MISMATCH",
+            "SIZE_MISMATCH"
+          ],
+          "notes": []
+        }
+      ],
+      "unit_price": {
+        "cents_per_unit": 45.5625,
+        "unit": "oz"
+      }
+    }
+  },
+  {
+    "title": "Corrected category: broth the retailer filed under 'Meat & Poultry'",
+    "decision": {
+      "listing_id": "T008",
+      "canonical_id": "C104",
+      "canonical_name": "Heritage Chicken Broth, 32 fl oz",
+      "assigned_category": "PANTRY",
+      "normalized_size": {
+        "total_value": 32.0,
+        "unit": "fl oz",
+        "dimension": "volume",
+        "pack_count": 1,
+        "unit_value": 32.0
+      },
+      "match_stage": "exact_signature",
+      "confidence": 0.95,
+      "reason_codes": [
+        "EXACT_SIGNATURE",
+        "ORGANIC_INFERRED",
+        "RETAILER_CATEGORY_OVERRIDDEN"
+      ],
+      "reviewer_flag": false,
+      "top_candidates": [
+        {
+          "canonical_id": "C104",
+          "canonical_name": "Heritage Chicken Broth, 32 fl oz",
+          "score": 0.95,
+          "components": {
+            "canonical_coverage": 1.0,
+            "listing_coverage": 1.0,
+            "lexical": 1.0,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [],
+          "notes": []
+        },
+        {
+          "canonical_id": "C126",
+          "canonical_name": "Heritage Low Sodium Chicken Broth, 32 fl oz",
+          "score": 0.5938,
+          "components": {
+            "canonical_coverage": 0.5,
+            "listing_coverage": 1.0,
+            "lexical": 0.625,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [],
+          "notes": []
+        },
+        {
+          "canonical_id": "C125",
+          "canonical_name": "Heritage Vegetable Broth, 32 fl oz",
+          "score": 0.475,
+          "components": {
+            "canonical_coverage": 0.5,
+            "listing_coverage": 0.5,
+            "lexical": 0.5,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "TYPE_MISMATCH"
+          ],
+          "notes": []
+        }
+      ],
+      "unit_price": {
+        "cents_per_unit": 9.3438,
+        "unit": "fl oz"
+      }
+    }
+  },
+  {
+    "title": "Corrected category: dog food the retailer filed under 'Meat'",
+    "decision": {
+      "listing_id": "T010",
+      "canonical_id": "C111",
+      "canonical_name": "Chicken Flavored Dog Food, 12 lb",
+      "assigned_category": "PET",
+      "normalized_size": {
+        "total_value": 192.0,
+        "unit": "oz",
+        "dimension": "mass",
+        "pack_count": 1,
+        "unit_value": 192.0
+      },
+      "match_stage": "rerank",
+      "confidence": 0.9025,
+      "reason_codes": [
+        "ORGANIC_INFERRED",
+        "RETAILER_CATEGORY_OVERRIDDEN"
+      ],
+      "reviewer_flag": false,
+      "top_candidates": [
+        {
+          "canonical_id": "C111",
+          "canonical_name": "Chicken Flavored Dog Food, 12 lb",
+          "score": 0.9025,
+          "components": {
+            "canonical_coverage": 1.0,
+            "listing_coverage": 0.8,
+            "lexical": 0.95,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [],
+          "notes": []
+        },
+        {
+          "canonical_id": "C143",
+          "canonical_name": "Chicken Jerky Dog Treats, 16 oz",
+          "score": 0.4512,
+          "components": {
+            "canonical_coverage": 0.5,
+            "listing_coverage": 0.4,
+            "lexical": 0.475,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "TYPE_MISMATCH",
+            "SIZE_MISMATCH"
+          ],
+          "notes": []
+        },
+        {
+          "canonical_id": "C104",
+          "canonical_name": "Heritage Chicken Broth, 32 fl oz",
+          "score": 0.3432,
+          "components": {
+            "canonical_coverage": 0.5,
+            "listing_coverage": 0.2,
+            "lexical": 0.425,
+            "brand_factor": 0.85,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "PET_HUMAN_CONFLICT",
+            "MASS_VOLUME_CONFLICT"
+          ],
+          "notes": [
+            "BRAND_MISSING"
+          ]
+        }
+      ],
+      "unit_price": {
+        "cents_per_unit": 13.0156,
+        "unit": "oz"
+      }
+    }
+  },
+  {
+    "title": "ABSTAIN: whole milk fits duplicate IDs C107 and C108",
+    "decision": {
+      "listing_id": "T014",
+      "canonical_id": null,
+      "canonical_name": null,
+      "assigned_category": "DAIRY",
+      "normalized_size": {
+        "total_value": 128.0,
+        "unit": "fl oz",
+        "dimension": "volume",
+        "pack_count": 1,
+        "unit_value": 128.0
+      },
+      "match_stage": "abstain",
+      "confidence": 0.0,
+      "reason_codes": [
+        "CATALOG_DUPLICATE",
+        "ORGANIC_INFERRED",
+        "CATEGORY_FROM_CANDIDATES"
+      ],
+      "reviewer_flag": true,
+      "top_candidates": [
+        {
+          "canonical_id": "C107",
+          "canonical_name": "Whole Milk, 1 gal",
+          "score": 0.95,
+          "components": {
+            "canonical_coverage": 1.0,
+            "listing_coverage": 1.0,
+            "lexical": 1.0,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [],
+          "notes": []
+        },
+        {
+          "canonical_id": "C108",
+          "canonical_name": "Whole Milk, 128 fl oz",
+          "score": 0.95,
+          "components": {
+            "canonical_coverage": 1.0,
+            "listing_coverage": 1.0,
+            "lexical": 1.0,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [],
+          "notes": []
+        },
+        {
+          "canonical_id": "C115",
+          "canonical_name": "2% Reduced Fat Milk, 1 gal",
+          "score": 0.2969,
+          "components": {
+            "canonical_coverage": 0.25,
+            "listing_coverage": 0.5,
+            "lexical": 0.3125,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [],
+          "notes": []
+        }
+      ],
+      "unit_price": {
+        "cents_per_unit": 3.3516,
+        "unit": "fl oz"
+      }
+    }
+  },
+  {
+    "title": "Veto: raw tuna steak never matches canned tuna",
+    "decision": {
+      "listing_id": "T003",
+      "canonical_id": "C102",
+      "canonical_name": "Atlantic Fresh Tuna Steak, raw 1 lb",
+      "assigned_category": "SEAFOOD",
+      "normalized_size": {
+        "total_value": 16.0,
+        "unit": "oz",
+        "dimension": "mass",
+        "pack_count": 1,
+        "unit_value": 16.0
+      },
+      "match_stage": "rerank",
+      "confidence": 0.8312,
+      "reason_codes": [
+        "ORGANIC_INFERRED"
+      ],
+      "reviewer_flag": true,
+      "top_candidates": [
+        {
+          "canonical_id": "C102",
+          "canonical_name": "Atlantic Fresh Tuna Steak, raw 1 lb",
+          "score": 0.8312,
+          "components": {
+            "canonical_coverage": 1.0,
+            "listing_coverage": 0.5,
+            "lexical": 0.875,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [],
+          "notes": []
+        },
+        {
+          "canonical_id": "C101",
+          "canonical_name": "Ocean Catch Solid White Tuna, canned 5 oz",
+          "score": 0.2969,
+          "components": {
+            "canonical_coverage": 0.3333,
+            "listing_coverage": 0.25,
+            "lexical": 0.3125,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "BRAND_MISMATCH",
+            "FORM_MISMATCH",
+            "SIZE_MISMATCH"
+          ],
+          "notes": []
+        },
+        {
+          "canonical_id": "C124",
+          "canonical_name": "Ocean Catch Chunk Light Tuna, canned 5 oz",
+          "score": 0.2969,
+          "components": {
+            "canonical_coverage": 0.3333,
+            "listing_coverage": 0.25,
+            "lexical": 0.3125,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "BRAND_MISMATCH",
+            "FORM_MISMATCH",
+            "SIZE_MISMATCH"
+          ],
+          "notes": []
+        }
+      ],
+      "unit_price": {
+        "cents_per_unit": 93.6875,
+        "unit": "oz"
+      }
+    }
+  },
+  {
+    "title": "ABSTAIN: false brand alias 'Ocean Cache'",
+    "decision": {
+      "listing_id": "T004",
+      "canonical_id": null,
+      "canonical_name": null,
+      "assigned_category": "UNKNOWN",
+      "normalized_size": {
+        "total_value": 5.0,
+        "unit": "oz",
+        "dimension": "mass",
+        "pack_count": 1,
+        "unit_value": 5.0
+      },
+      "match_stage": "abstain",
+      "confidence": 0.0,
+      "reason_codes": [
+        "NO_SAFE_CANDIDATE",
+        "ORGANIC_INFERRED",
+        "CATEGORY_UNKNOWN"
+      ],
+      "reviewer_flag": true,
+      "top_candidates": [
+        {
+          "canonical_id": "C101",
+          "canonical_name": "Ocean Catch Solid White Tuna, canned 5 oz",
+          "score": 0.95,
+          "components": {
+            "canonical_coverage": 1.0,
+            "listing_coverage": 1.0,
+            "lexical": 1.0,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "BRAND_UNAPPROVED"
+          ],
+          "notes": []
+        },
+        {
+          "canonical_id": "C102",
+          "canonical_name": "Atlantic Fresh Tuna Steak, raw 1 lb",
+          "score": 0.4354,
+          "components": {
+            "canonical_coverage": 0.5,
+            "listing_coverage": 0.3333,
+            "lexical": 0.4583,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "BRAND_UNAPPROVED",
+            "SIZE_MISMATCH"
+          ],
+          "notes": []
+        },
+        {
+          "canonical_id": "C124",
+          "canonical_name": "Ocean Catch Chunk Light Tuna, canned 5 oz",
+          "score": 0.3167,
+          "components": {
+            "canonical_coverage": 0.3333,
+            "listing_coverage": 0.3333,
+            "lexical": 0.3333,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "BRAND_UNAPPROVED"
+          ],
+          "notes": []
+        }
+      ],
+      "unit_price": {
+        "cents_per_unit": 19.8,
+        "unit": "oz"
+      }
+    }
+  },
+  {
+    "title": "Upstream AI says CATEGORY_UNCERTAIN: approved category kept",
+    "decision": {
+      "listing_id": "T006",
+      "canonical_id": "C103",
+      "canonical_name": "Farmhouse Chicken Breast, boneless 1 lb",
+      "assigned_category": "MEAT",
+      "normalized_size": {
+        "total_value": 16.0,
+        "unit": "oz",
+        "dimension": "mass",
+        "pack_count": 1,
+        "unit_value": 16.0
+      },
+      "match_stage": "rerank",
+      "confidence": 0.8906,
+      "reason_codes": [
+        "ORGANIC_INFERRED",
+        "UPSTREAM_CATEGORY_UNCERTAIN",
+        "APPROVED_CATEGORY_PRESERVED"
+      ],
+      "reviewer_flag": true,
+      "top_candidates": [
+        {
+          "canonical_id": "C103",
+          "canonical_name": "Farmhouse Chicken Breast, boneless 1 lb",
+          "score": 0.8906,
+          "components": {
+            "canonical_coverage": 1.0,
+            "listing_coverage": 0.75,
+            "lexical": 0.9375,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [],
+          "notes": []
+        },
+        {
+          "canonical_id": "C120",
+          "canonical_name": "Farmhouse Chicken Thighs, boneless 1.5 lb",
+          "score": 0.5938,
+          "components": {
+            "canonical_coverage": 0.6667,
+            "listing_coverage": 0.5,
+            "lexical": 0.625,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "SIZE_MISMATCH"
+          ],
+          "notes": []
+        },
+        {
+          "canonical_id": "C122",
+          "canonical_name": "Golden Crisp Breaded Chicken Breast Nuggets, 2 lb",
+          "score": 0.475,
+          "components": {
+            "canonical_coverage": 0.5,
+            "listing_coverage": 0.5,
+            "lexical": 0.5,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "BRAND_MISMATCH",
+            "SIZE_MISMATCH"
+          ],
+          "notes": []
+        }
+      ],
+      "unit_price": {
+        "cents_per_unit": 43.6875,
+        "unit": "oz"
+      }
+    }
+  },
+  {
+    "title": "Upstream AI times out: approved category kept",
+    "decision": {
+      "listing_id": "T006",
+      "canonical_id": "C103",
+      "canonical_name": "Farmhouse Chicken Breast, boneless 1 lb",
+      "assigned_category": "MEAT",
+      "normalized_size": {
+        "total_value": 16.0,
+        "unit": "oz",
+        "dimension": "mass",
+        "pack_count": 1,
+        "unit_value": 16.0
+      },
+      "match_stage": "rerank",
+      "confidence": 0.8906,
+      "reason_codes": [
+        "ORGANIC_INFERRED",
+        "UPSTREAM_TIMEOUT",
+        "APPROVED_CATEGORY_PRESERVED"
+      ],
+      "reviewer_flag": true,
+      "top_candidates": [
+        {
+          "canonical_id": "C103",
+          "canonical_name": "Farmhouse Chicken Breast, boneless 1 lb",
+          "score": 0.8906,
+          "components": {
+            "canonical_coverage": 1.0,
+            "listing_coverage": 0.75,
+            "lexical": 0.9375,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [],
+          "notes": []
+        },
+        {
+          "canonical_id": "C120",
+          "canonical_name": "Farmhouse Chicken Thighs, boneless 1.5 lb",
+          "score": 0.5938,
+          "components": {
+            "canonical_coverage": 0.6667,
+            "listing_coverage": 0.5,
+            "lexical": 0.625,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "SIZE_MISMATCH"
+          ],
+          "notes": []
+        },
+        {
+          "canonical_id": "C122",
+          "canonical_name": "Golden Crisp Breaded Chicken Breast Nuggets, 2 lb",
+          "score": 0.475,
+          "components": {
+            "canonical_coverage": 0.5,
+            "listing_coverage": 0.5,
+            "lexical": 0.5,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "BRAND_MISMATCH",
+            "SIZE_MISMATCH"
+          ],
+          "notes": []
+        }
+      ],
+      "unit_price": {
+        "cents_per_unit": 43.6875,
+        "unit": "oz"
+      }
+    }
+  },
+  {
+    "title": "Upstream AI confidently disagrees: category kept, reviewer flagged",
+    "decision": {
+      "listing_id": "T006",
+      "canonical_id": "C103",
+      "canonical_name": "Farmhouse Chicken Breast, boneless 1 lb",
+      "assigned_category": "MEAT",
+      "normalized_size": {
+        "total_value": 16.0,
+        "unit": "oz",
+        "dimension": "mass",
+        "pack_count": 1,
+        "unit_value": 16.0
+      },
+      "match_stage": "rerank",
+      "confidence": 0.8906,
+      "reason_codes": [
+        "ORGANIC_INFERRED",
+        "UPSTREAM_CATEGORY_SUGGESTED",
+        "APPROVED_CATEGORY_PRESERVED",
+        "CATEGORY_CONFLICT_REVIEW"
+      ],
+      "reviewer_flag": true,
+      "top_candidates": [
+        {
+          "canonical_id": "C103",
+          "canonical_name": "Farmhouse Chicken Breast, boneless 1 lb",
+          "score": 0.8906,
+          "components": {
+            "canonical_coverage": 1.0,
+            "listing_coverage": 0.75,
+            "lexical": 0.9375,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [],
+          "notes": []
+        },
+        {
+          "canonical_id": "C120",
+          "canonical_name": "Farmhouse Chicken Thighs, boneless 1.5 lb",
+          "score": 0.5938,
+          "components": {
+            "canonical_coverage": 0.6667,
+            "listing_coverage": 0.5,
+            "lexical": 0.625,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "SIZE_MISMATCH"
+          ],
+          "notes": []
+        },
+        {
+          "canonical_id": "C122",
+          "canonical_name": "Golden Crisp Breaded Chicken Breast Nuggets, 2 lb",
+          "score": 0.475,
+          "components": {
+            "canonical_coverage": 0.5,
+            "listing_coverage": 0.5,
+            "lexical": 0.5,
+            "brand_factor": 1.0,
+            "organic_factor": 0.95
+          },
+          "vetoes": [
+            "BRAND_MISMATCH",
+            "SIZE_MISMATCH"
+          ],
+          "notes": []
+        }
+      ],
+      "unit_price": {
+        "cents_per_unit": 43.6875,
+        "unit": "oz"
+      }
+    }
+  },
+  {
+    "title": "search chicken breast @ FreshTown",
+    "search": {
+      "query": "chicken breast",
+      "retailer": "FreshTown",
+      "intent": {
+        "canonical_ids": [
+          "C103",
+          "C122"
+        ],
+        "categories": [
+          "FROZEN",
+          "MEAT"
+        ],
+        "types": [
+          "chicken"
+        ]
+      },
+      "fallback": false,
+      "reason": null,
+      "results": [
+        {
+          "listing_id": "T006",
+          "retailer": "FreshTown",
+          "raw_name": "Farmhouse Boneless Skinless Chicken Breast",
+          "canonical_id": "C103",
+          "canonical_name": "Farmhouse Chicken Breast, boneless 1 lb",
+          "assigned_category": "MEAT",
+          "match_stage": "rerank",
+          "price_cents": 699,
+          "unit_price": {
+            "cents_per_unit": 43.6875,
+            "unit": "oz"
+          },
+          "score": 1.8781,
+          "components": {
+            "tier": 1,
+            "query_coverage": 1.0,
+            "listing_coverage": 0.6667,
+            "match_confidence": 0.8906
+          },
+          "collapsed_duplicates": []
+        },
+        {
+          "listing_id": "G029",
+          "retailer": "FreshTown",
+          "raw_name": "Golden Crisp Breaded Chicken Breast Nuggets",
+          "canonical_id": "C122",
+          "canonical_name": "Golden Crisp Breaded Chicken Breast Nuggets, 2 lb",
+          "assigned_category": "FROZEN",
+          "match_stage": "exact_signature",
+          "price_cents": 230,
+          "unit_price": {
+            "cents_per_unit": 7.1875,
+            "unit": "oz"
+          },
+          "score": 1.84,
+          "components": {
+            "tier": 1,
+            "query_coverage": 1.0,
+            "listing_coverage": 0.5,
+            "match_confidence": 0.95
+          },
+          "collapsed_duplicates": [
+            "T031"
+          ]
+        }
+      ],
+      "deduplicated": [
+        "T031"
+      ]
+    }
+  },
+  {
+    "title": "search chicken breast @ None",
+    "search": {
+      "query": "chicken breast",
+      "retailer": null,
+      "intent": {
+        "canonical_ids": [
+          "C103",
+          "C122"
+        ],
+        "categories": [
+          "FROZEN",
+          "MEAT"
+        ],
+        "types": [
+          "chicken"
+        ]
+      },
+      "fallback": false,
+      "reason": null,
+      "results": [
+        {
+          "listing_id": "G004",
+          "retailer": "MarketSquare",
+          "raw_name": "Farmhouse Chicken Breast boneless",
+          "canonical_id": "C103",
+          "canonical_name": "Farmhouse Chicken Breast, boneless 1 lb",
+          "assigned_category": "MEAT",
+          "match_stage": "exact_signature",
+          "price_cents": 1827,
+          "unit_price": {
+            "cents_per_unit": 114.1875,
+            "unit": "oz"
+          },
+          "score": 1.89,
+          "components": {
+            "tier": 1,
+            "query_coverage": 1.0,
+            "listing_coverage": 0.6667,
+            "match_confidence": 0.95
+          },
+          "collapsed_duplicates": [
+            "T007"
+          ]
+        },
+        {
+          "listing_id": "T006",
+          "retailer": "FreshTown",
+          "raw_name": "Farmhouse Boneless Skinless Chicken Breast",
+          "canonical_id": "C103",
+          "canonical_name": "Farmhouse Chicken Breast, boneless 1 lb",
+          "assigned_category": "MEAT",
+          "match_stage": "rerank",
+          "price_cents": 699,
+          "unit_price": {
+            "cents_per_unit": 43.6875,
+            "unit": "oz"
+          },
+          "score": 1.8781,
+          "components": {
+            "tier": 1,
+            "query_coverage": 1.0,
+            "listing_coverage": 0.6667,
+            "match_confidence": 0.8906
+          },
+          "collapsed_duplicates": []
+        },
+        {
+          "listing_id": "G029",
+          "retailer": "FreshTown",
+          "raw_name": "Golden Crisp Breaded Chicken Breast Nuggets",
+          "canonical_id": "C122",
+          "canonical_name": "Golden Crisp Breaded Chicken Breast Nuggets, 2 lb",
+          "assigned_category": "FROZEN",
+          "match_stage": "exact_signature",
+          "price_cents": 230,
+          "unit_price": {
+            "cents_per_unit": 7.1875,
+            "unit": "oz"
+          },
+          "score": 1.84,
+          "components": {
+            "tier": 1,
+            "query_coverage": 1.0,
+            "listing_coverage": 0.5,
+            "match_confidence": 0.95
+          },
+          "collapsed_duplicates": [
+            "T031"
+          ]
+        },
+        {
+          "listing_id": "G030",
+          "retailer": "ValueMart",
+          "raw_name": "GOLDEN CRISP BREADED CHICKEN BREAST NUGGETS",
+          "canonical_id": "C122",
+          "canonical_name": "Golden Crisp Breaded Chicken Breast Nuggets, 2 lb",
+          "assigned_category": "FROZEN",
+          "match_stage": "exact_signature",
+          "price_cents": 1195,
+          "unit_price": {
+            "cents_per_unit": 37.3438,
+            "unit": "oz"
+          },
+          "score": 1.84,
+          "components": {
+            "tier": 1,
+            "query_coverage": 1.0,
+            "listing_coverage": 0.5,
+            "match_confidence": 0.95
+          },
+          "collapsed_duplicates": []
+        }
+      ],
+      "deduplicated": [
+        "T007",
+        "T031"
+      ]
+    }
+  },
+  {
+    "title": "search chicken thighs @ FreshTown",
+    "search": {
+      "query": "chicken thighs",
+      "retailer": "FreshTown",
+      "intent": {
+        "canonical_ids": [
+          "C120"
+        ],
+        "categories": [
+          "MEAT"
+        ],
+        "types": [
+          "chicken"
+        ]
+      },
+      "fallback": true,
+      "reason": null,
+      "results": [
+        {
+          "listing_id": "T006",
+          "retailer": "FreshTown",
+          "raw_name": "Farmhouse Boneless Skinless Chicken Breast",
+          "canonical_id": "C103",
+          "canonical_name": "Farmhouse Chicken Breast, boneless 1 lb",
+          "assigned_category": "MEAT",
+          "match_stage": "rerank",
+          "price_cents": 699,
+          "unit_price": {
+            "cents_per_unit": 43.6875,
+            "unit": "oz"
+          },
+          "score": 0.5281,
+          "components": {
+            "tier": 0,
+            "query_coverage": 0.5,
+            "listing_coverage": 0.3333,
+            "match_confidence": 0.8906
+          },
+          "collapsed_duplicates": []
+        }
+      ],
+      "deduplicated": []
+    }
+  },
+  {
+    "title": "search pretzels @ None",
+    "search": {
+      "query": "pretzels",
+      "retailer": null,
+      "intent": {
+        "canonical_ids": [],
+        "categories": [],
+        "types": []
+      },
+      "fallback": false,
+      "reason": "no_safe_match",
+      "results": [],
+      "deduplicated": []
+    }
+  }
+]

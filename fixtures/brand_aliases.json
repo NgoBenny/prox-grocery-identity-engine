@@ -1,0 +1,12 @@
+{
+  "_comment": "Approved brand allowlist: canonical brand -> normalized aliases retailers use. A brand not listed here (e.g. 'Ocean Cache', 'Farmstead') is NOT an alias of anything.",
+  "Ocean Catch": ["ocean catch", "ocean-catch", "oceancatch"],
+  "Atlantic Fresh": ["atlantic fresh"],
+  "Farmhouse": ["farmhouse", "farm house", "farmhouse farms"],
+  "Heritage": ["heritage", "heritage kitchen"],
+  "Golden Crisp": ["golden crisp"],
+  "Valley Creamery": ["valley creamery"],
+  "Meadowlark": ["meadowlark", "meadow lark"],
+  "Nutty Acres": ["nutty acres"],
+  "Sunvine": ["sunvine", "sun vine"]
+}
