@@ -1,0 +1,31 @@
+{
+  "corpus": {
+    "canonical_ids": 46,
+    "listings": 100,
+    "index_terms": 72,
+    "search_terms": 86
+  },
+  "build_ms": 39.34,
+  "search": {
+    "count": 100,
+    "p50_ms": 0.4289,
+    "p95_ms": 0.6803,
+    "max_ms": 0.8629,
+    "warmup": 10,
+    "distinct_queries": 10
+  },
+  "match_one_listing": {
+    "count": 100,
+    "p50_ms": 0.2771,
+    "p95_ms": 0.4382,
+    "max_ms": 0.5005
+  },
+  "percentile_method": "nearest-rank",
+  "cache_policy": "no result cache; immutable in-memory index; decisions precomputed at load",
+  "machine": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.14",
+    "processor": "AMD64 Family 23 Model 113 Stepping 0, AuthenticAMD",
+    "cpu_count": 12
+  }
+}
