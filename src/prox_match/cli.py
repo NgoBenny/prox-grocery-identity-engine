@@ -92,6 +92,8 @@ def _write(obj, path: str) -> None:
 
 
 def cmd_evaluate(engine: Engine, args) -> int:
+    if Path(args.output).resolve() == Path(args.truth).resolve():
+        raise ValueError("output must not overwrite truth")
     truth = load_jsonl(args.truth, TruthLabel)
     splits = ["dev", "heldout", "all"] if args.split == "all" else [args.split]
     result = evaluate(engine, truth, Path(args.truth).read_text(encoding="utf-8-sig"), splits)

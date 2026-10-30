@@ -72,6 +72,19 @@ def test_evaluate_cli_never_modifies_truth(tmp_path, capsys):
     assert out.is_file()
 
 
+def test_evaluate_rejects_output_overwriting_truth(tmp_path, capsys):
+    truth = tmp_path / "labels.jsonl"
+    original = '{"listing_id": "T006", "expected_canonical_id": "C103"}\n'
+    truth.write_text(original, encoding="utf-8")
+    subdir = tmp_path / "subdir"
+    subdir.mkdir()
+    output = subdir / ".." / truth.name
+    assert main(["evaluate", "--truth", str(truth), "--split", "dev",
+                 "--output", str(output)]) == 2
+    assert "output must not overwrite truth" in capsys.readouterr().err
+    assert truth.read_text(encoding="utf-8") == original
+
+
 def test_percentile_nearest_rank():
     samples = list(range(1, 101))
     assert bench.percentile(samples, 50) == 50
