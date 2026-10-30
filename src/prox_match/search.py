@@ -103,6 +103,8 @@ class SearchIndex:
                 continue
             if f.pet != qf.pet:
                 continue
+            if qf.organic_explicit and f.organic != qf.organic:
+                continue
             brand = index.products[d["canonical_id"]].brand if d["canonical_id"] else f.brand
             if qf.brand_status == "approved" and brand != qf.brand:
                 continue

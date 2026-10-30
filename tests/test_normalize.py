@@ -56,6 +56,8 @@ def test_close_but_different_sizes_are_not_equal():
 @pytest.mark.parametrize("raw,problem", [
     ("", "SIZE_UNKNOWN"), ("0 oz", "SIZE_ZERO_INVALID"), ("0 x 8 oz", "SIZE_ZERO_INVALID"),
     ("family size", "SIZE_UNPARSEABLE"), ("12 parsecs", "SIZE_UNPARSEABLE"),
+    ("-16 oz", "SIZE_UNPARSEABLE"), ("-1 lb", "SIZE_UNPARSEABLE"),
+    ("2 x -8 oz", "SIZE_UNPARSEABLE"),
 ])
 def test_bad_sizes_return_a_reason(raw, problem):
     assert parse_size(raw) == (None, problem)

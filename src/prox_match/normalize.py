@@ -135,7 +135,8 @@ def parse_size(raw: str) -> tuple[Size | None, str | None]:
     """-> (Size, None) or (None, SIZE_UNKNOWN | SIZE_ZERO_INVALID | SIZE_UNPARSEABLE)."""
     text = re.sub(r"(?<!\d)\.|\.(?!\d)", " ", (raw or "").casefold())  # "fl. oz." -> "fl oz"
     text = re.sub(r"(\d+)/([1-9]\d*)", lambda m: f"{int(m[1]) / int(m[2]):g}", text)  # 1/2 gal
-    text = re.sub(r"[\s-]+", " ", text).strip()  # "18-count" -> "18 count"
+    text = re.sub(r"(?<=\d)\s*-\s*(?=[a-z])", " ", text)  # "18-count", preserve minus signs
+    text = re.sub(r"\s+", " ", text).strip()
     if not text:
         return None, "SIZE_UNKNOWN"
     m = _SIZE_RE.match(text)

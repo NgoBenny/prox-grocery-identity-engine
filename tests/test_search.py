@@ -68,6 +68,12 @@ def test_brand_only_query(engine):
         r["canonical_id"] in {"C104", "C125", "C126"} for r in result["results"])
 
 
+def test_organic_query_never_falls_back_to_conventional_spinach(engine):
+    result = engine.search("organic baby spinach", "ValueMart")
+    assert result["results"] == [] and result["reason"] == "no_safe_match"
+    assert "C109" in _ids(engine.search("organic baby spinach", "FreshTown"))
+
+
 def test_branded_query_excludes_other_brands(engine):
     ids = set(_ids(engine.search("Farmhouse chicken breast")))
     assert "C103" in ids and "C122" not in ids
