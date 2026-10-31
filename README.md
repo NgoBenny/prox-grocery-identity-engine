@@ -201,6 +201,27 @@ Across all 100 listings, 16 abstain and 22 carry `reviewer_flag`. Of the 62 clea
 - [ ] LLM secondary resolver: deliberately not built; the upstream-worker interface shows where one plugs in
 - [ ] CI workflow: not built
 
+## Tradeoffs
+
+| Choice | Gain | Cost |
+|---|---|---|
+| Rules + lexical scoring, no LLM or embeddings | Reproducible, explainable, offline; can't invent IDs | Lower recall on phrasings the word lists don't know |
+| Precision over recall (abstain when unsure) | No confident wrong match on the labeled traps | More listings go to human review |
+| Hard vetoes instead of soft penalties | A high name score can never cross a form, pet or size boundary | One wrong cue in a listing can block a correct match |
+| Catalog category over retailer aisle and upstream AI | Misfiled aisles and uncertain AI can't corrupt category | A genuinely wrong catalog category needs explicit conflict review |
+| Abstain on C107/C108 instead of picking one | No arbitrary ID choice | Every whole-milk gallon listing waits for a catalog merge |
+| Decisions precomputed at load, no result cache | Search never re-runs the matcher; no stale cache | New listings require a rebuild (incremental matching is in SCALE_AND_COST.md) |
+| Hand-written word lists | Small, readable, easy to change in an interview | Must be maintained by hand (priority 3 below) |
+
+## Failure handling
+
+- **Malformed input files:** the CLI prints the file and line number and exits 2 (for example a string `price_cents`). Nothing is coerced to 0.
+- **Bad HTTP input:** schema errors (string price, empty `raw_name`, empty query) return 422; engine-level `ValueError` returns 400; an unknown `listing_id` returns 404. No 500s for bad input.
+- **Missing, zero or unreadable size:** ABSTAIN with `SIZE_UNKNOWN` / `SIZE_ZERO_INVALID`; no unit price is computed.
+- **Upstream AI worker uncertain, timed out, crashed or saturated:** the approved category is kept and the reason code says why.
+- **Search with nothing safe to return:** empty results with `reason: no_safe_match`, not unrelated items.
+- **Evaluation:** truth rows naming unknown or repeated listings are rejected, and `--output` may not overwrite the truth file.
+
 ## Assumptions
 
 - No organic word in a listing means non-organic. Retailers almost always advertise organic.
