@@ -15,4 +15,22 @@ Hours marked *est.* are Claude's estimates from session and commit timestamps, p
 | Step 3: evaluate + benchmark, dev score, policy freeze, held-out run | implementation | 0.15 *est.* | 15:38 -> 15:45 |
 | Step 3: clean-checkout run, review gate (1 fix, 1 issue) | testing | 0.1 *est.* | 15:45 -> 15:50 |
 | Step 3: PR #6 review with Codex (1 fix) | testing | 0.1 *est.* | Fix 80aedb5 |
-| **Running total** | | **2.35 *est.*** | **7.65 h left** |
+| Step 4: README, SCALE_AND_COST, AI_USAGE, DEMO | documentation | 0.1 *est.* | 15:54 -> 15:58 commit |
+| Step 4: Codex docs review (corrections) + merge PR #7 | documentation | 0.1 *est.* | 15:58 -> 16:05 |
+| C107/C108 demo wording vs the assessment | design | 0.1 *est.* | Part of the 16:05 -> 16:50 window, which includes idle time |
+| Fix issues #1, #2, #3, #5 with regression tests | debugging | 0.4 *est.* | Committed 16:50 |
+| PR #8: Codex review (2 fixes) + merge | testing | 0.25 *est.* | 16:50 -> 17:05 |
+| Final requirements audit vs the assessment, time report | documentation | 0.2 *est.* | 17:05 -> 17:17 |
+| Demo recording | documentation | _fill in_ | |
+| **Running total** | | **3.5 *est.*** | **6.5 h left** (before recording) |
+
+## By category (for the README)
+
+| Category | Hours |
+|---|---|
+| Design | 0.55 |
+| Implementation | 1.15 |
+| Testing | 0.65 |
+| Debugging | 0.75 |
+| Documentation | 0.4 + recording |
+| **Total** | **3.5 + recording** |
