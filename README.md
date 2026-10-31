@@ -227,4 +227,10 @@ Across all 100 listings, 16 abstain and 22 carry `reviewer_flag`. Of the 62 clea
 
 ## Time and AI use
 
-Active hours by step and category: [TIME_LOG.md](TIME_LOG.md), 2.35 h through Step 3, docs to be added. Tools, prompts, corrections and review-gate logs: [AI_USAGE.md](AI_USAGE.md). Demo script: [DEMO.md](DEMO.md). Demo video: _link to be added_.
+Approximate active hours (estimated from commit timestamps; per-step detail in [TIME_LOG.md](TIME_LOG.md)):
+
+| Design | Implementation | Testing | Debugging | Documentation | Total |
+|---|---|---|---|---|---|
+| 2.1 h | 1.15 h | 0.65 h | 0.75 h | 0.4 h + demo recording | ~5 h of the 10 h cap |
+
+Wall-clock time is short because AI agents wrote most of the code. The hours cover directing, reviewing and verifying that work, not typing it. Tools, prompts, corrections and review-gate logs: [AI_USAGE.md](AI_USAGE.md). Demo script: [DEMO.md](DEMO.md). Demo video: _link to be added_.
