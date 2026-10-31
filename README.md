@@ -231,6 +231,6 @@ Approximate active hours (estimated from commit timestamps; per-step detail in [
 
 | Design | Implementation | Testing | Debugging | Documentation | Total |
 |---|---|---|---|---|---|
-| 2.1 h | 1.15 h | 0.65 h | 0.75 h | 0.4 h + demo recording | ~5 h of the 10 h cap |
+| 2.1 h | 1.15 h | 0.65 h | 0.75 h | 1.15 h | ~5.8 h of the 10 h cap |
 
-Wall-clock time is short because AI agents wrote most of the code. The hours cover directing, reviewing and verifying that work, not typing it. Tools, prompts, corrections and review-gate logs: [AI_USAGE.md](AI_USAGE.md). Demo script: [DEMO.md](DEMO.md). Demo video: _link to be added_.
+Wall-clock time is short because AI agents wrote most of the code. The hours cover directing, reviewing and verifying that work, not typing it. Tools, prompts, corrections and review-gate logs: [AI_USAGE.md](AI_USAGE.md). Demo script: [DEMO.md](DEMO.md). Demo video: [Google Drive](https://drive.google.com/file/d/1JYKlh9jAVP0ttMzosIfrPAmg7a9OiRMp/view?usp=sharing).

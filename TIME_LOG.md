@@ -21,8 +21,8 @@ Hours marked *est.* are Claude's estimates from session and commit timestamps, p
 | Fix issues #1, #2, #3, #5 with regression tests | debugging | 0.4 *est.* | Committed 16:50 |
 | PR #8: Codex review (2 fixes) + merge | testing | 0.25 *est.* | 16:50 -> 17:05 |
 | Final requirements audit vs the assessment, time report | documentation | 0.2 *est.* | 17:05 -> 17:17 |
-| Demo recording | documentation | _fill in_ | |
-| **Running total** | | **5.05 *est.*** | **4.95 h left** (before recording) |
+| Demo recording: setup, takes, upload | documentation | 0.75 | Candidate: 30-45 min; upper end logged |
+| **Running total** | | **5.8 *est.*** | **4.2 h left** |
 
 ## By category (for the README)
 
@@ -32,5 +32,5 @@ Hours marked *est.* are Claude's estimates from session and commit timestamps, p
 | Implementation | 1.15 |
 | Testing | 0.65 |
 | Debugging | 0.75 |
-| Documentation | 0.4 + recording |
-| **Total** | **5.05 + recording** |
+| Documentation | 1.15 |
+| **Total** | **5.8** |

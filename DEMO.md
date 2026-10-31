@@ -1,6 +1,6 @@
 # Demo walkthrough (about 3 minutes)
 
-Recording: _link to be added_
+Recording: [Google Drive](https://drive.google.com/file/d/1JYKlh9jAVP0ttMzosIfrPAmg7a9OiRMp/view?usp=sharing)
 
 Record the terminal (and one browser tab for the API). Run the commands live; show the held-out numbers from the committed evaluation report and identify them as saved results. Commands are from the repo root.
 
