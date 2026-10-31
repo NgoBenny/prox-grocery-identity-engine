@@ -14,6 +14,9 @@ CASES = [
      "C102", None),
     ("tinned salmon is not a fresh fillet", "Pink Salmon, Tinned", "14.75 oz", "", "C106", None),
     ("fresh fillet is not tinned salmon", "Salmon Fillet Fresh", "1 lb", "", "C105", None),
+    # only form separates C105 and C123; the fresh fillet out-scores on words, so the veto decides
+    ("frozen fillet is not the fresh fillet", "Frozen Salmon Fillet", "1 lb", "", "C123",
+     "FORM_MISMATCH"),
     ("broth is not chicken meat", "Heritage Chicken Broth Carton", "32 fl oz", "Heritage", "C104",
      None),
     ("dog food is not human chicken", "Dry Dog Food Chicken Flavored", "12 lb", "", "C111", None),
