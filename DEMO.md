@@ -36,12 +36,12 @@ Say: C107 "Whole Milk, 1 gal" and C108 "Whole Milk, 128 fl oz" are the same prod
 ## 1:50–2:15 · Search over HTTP
 
 ```bash
-uv run uvicorn prox_match.api:app --port 8000
+uv run uvicorn prox_match.api:app --port 8001
 ```
 
 Keep the server running in a second terminal so the recording terminal is free for later commands.
 
-Open `http://127.0.0.1:8000/search?q=chicken%20breast&retailer=FreshTown`. Show that only MEAT and FROZEN chicken come back, plain breast ranks first, and the `components` show why. Broth, dog food and the seasoning rub are absent. (Optional: `/docs`.)
+Open `http://127.0.0.1:8001/search?q=chicken%20breast&retailer=FreshTown`. Show that only MEAT and FROZEN chicken come back, plain breast ranks first, and the `components` show why. Broth, dog food and the seasoning rub are absent. (Optional: `/docs`.)
 
 ## 2:15–2:50 · Real tests and evaluation
 
