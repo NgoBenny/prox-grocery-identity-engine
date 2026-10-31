@@ -11,7 +11,7 @@ Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 ```bash
 uv sync --locked
 uv run prox-match demo      # one-command offline walkthrough
-uv run pytest -q            # 142 tests
+uv run pytest -q            # 154 tests
 ```
 
 Other commands:
@@ -92,7 +92,7 @@ Generation rules and record formats: [fixtures/README.md](fixtures/README.md).
 
 ### Category guard
 
-The catalog category of a matched ID wins by default. The simulated upstream AI worker can return `CATEGORY_UNCERTAIN`, time out (a real 0.2 s deadline) or crash, and the category doesn't change (`APPROVED_CATEGORY_PRESERVED`). A confident disagreement sets `reviewer_flag`. For a matched ID, only an explicit `conflict_review=True` call, the human-review path, applies the upstream category. Abstained listings get the category their plausible candidates agree on, otherwise a confident upstream suggestion if provided, otherwise `UNKNOWN`; they remain flagged for review.
+The catalog category of a matched ID wins by default. The simulated upstream AI worker can return `CATEGORY_UNCERTAIN`, time out (a real 0.2 s deadline) or crash, and the category doesn't change (`APPROVED_CATEGORY_PRESERVED`). At most 16 worker threads may be active; capacity exhaustion returns uncertainty immediately, and thread-start failure becomes `UPSTREAM_ERROR`. Timed-out threads keep their slot until they finish; real workers that can hang indefinitely would need process isolation. A confident disagreement sets `reviewer_flag`. For a matched ID, only an explicit `conflict_review=True` call, the human-review path, applies the upstream category. Abstained listings get the category their plausible candidates agree on, otherwise a confident upstream suggestion if provided, otherwise `UNKNOWN`; they remain flagged for review.
 
 ## Sample output (real runs)
 
@@ -167,7 +167,7 @@ A wrong-ID prediction counts as both an FP and an FN. Zero denominators report `
 
 Across all 100 listings, 16 abstain and 22 carry `reviewer_flag`. Of the 62 clean generated listings, 3 abstain, all of them whole milk hitting the C107/C108 duplicate.
 
-**Benchmark** (`prox-match benchmark`, Windows 11 laptop, AMD64 with 12 logical CPUs, Python 3.12.14): engine build (load, index, match all 100 listings, search index) **39 ms**; **100 searches p50 0.43 ms, p95 0.68 ms** after 10 warm-ups; single-listing match p50 0.28 ms. Percentiles are nearest-rank. **Cache policy:** no result cache; the index is built at startup and treated as read-only, and decisions are computed once at load, so search never re-runs the matcher. Timings vary run to run; these are small-corpus measurements.
+**Benchmark** (`prox-match benchmark`, Windows 11 laptop, AMD64 with 12 logical CPUs, Python 3.12.14): engine build (load, index, match all 100 listings, search index) **39 ms**; **100 searches p50 0.27 ms, p95 0.52 ms** after 10 warm-ups; single-listing match p50 0.31 ms. This is the saved post-review run; an earlier PR run measured 0.26 / 0.39 ms for search, illustrating timing variation. Before the [#3](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/3) search pre-filter, the saved result was p50 0.43 / p95 0.68 ms. Percentiles are nearest-rank. **Cache policy:** no result cache; the index is built at startup and treated as read-only, and decisions are computed once at load, so search never re-runs the matcher. These are small-corpus measurements, not a controlled full-scale speedup study.
 
 ## Human review: what goes there, what never auto-approves
 
@@ -195,7 +195,7 @@ Across all 100 listings, 16 abstain and 22 carry `reviewer_flag`. Of the 62 clea
 - [x] Category guard vs simulated `CATEGORY_UNCERTAIN`, timeout, and confident conflict; corrected-category examples (T008, T010)
 - [x] `/search` with retailer filter, dedup by (retailer, canonical_id), typo and related fallback, `no_safe_match`, exposed score components
 - [x] Precision, recall, exact-ID accuracy, abstention, high-confidence FP rate, category error rate, confusion report
-- [x] ≥ 20 regression assertions: 28 parametrized adversarial cases plus 114 other tests (142 total)
+- [x] ≥ 20 regression assertions: 28 parametrized adversarial cases plus 126 other tests (154 total)
 - [x] Indexing + 100-search benchmark with measured p50/p95
 - [x] SCALE_AND_COST.md, AI_USAGE.md, DEMO.md
 - [ ] LLM secondary resolver: deliberately not built; the upstream-worker interface shows where one plugs in
@@ -216,12 +216,13 @@ Across all 100 listings, 16 abstain and 22 carry `reviewer_flag`. Of the 62 clea
 - Product type phrases come from the catalog's `type` field. When no phrase is detected, matching falls back to lexical evidence and the remaining vetoes; abstention is not guaranteed. "Chicken Jerky Treats" without pet evidence abstains in the bundled catalog.
 - Generic unbranded listings of branded products ("Chicken Breast 1 lb", no brand) usually abstain, because of the missing-brand penalty.
 - `confidence` is not calibrated, and the 0.70 / 0.08 / 0.90 thresholds were set on 28 dev cases.
-- Open low-score findings: [#1](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/1), [#2](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/2), [#3](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/3), [#5](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/5).
+- The low-score review findings first filed as issues (#1, #2, #3, #5) were fixed afterwards, each with a regression test that fails on the old code.
+- `CatalogIndex.candidates` still scans the whole vocabulary for fuzzy token matches (a marked `shortcut:`). It's fine at this corpus size and is the first thing to replace at scale.
 
 ## Next three priorities
 
 1. **An independently labeled evaluation set** of a few hundred listings from a second person, then calibrate `confidence` against it (isotonic or binned), so thresholds come from measured precision rather than judgment.
-2. **Scale retrieval.** Replace the linear fuzzy vocabulary scan with a trigram or RapidFuzz `process.extract` index ([#3](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/3)), shard postings by category, and match incrementally by listing content hash (see [SCALE_AND_COST.md](SCALE_AND_COST.md)).
+2. **Scale retrieval.** Replace the linear fuzzy vocabulary scan in `CatalogIndex.candidates` with a trigram or RapidFuzz `process.extract` index, shard postings by category, and match incrementally by listing content hash (see [SCALE_AND_COST.md](SCALE_AND_COST.md)).
 3. **Learn the word lists from review outcomes.** Every reviewer decision on an ABSTAIN becomes a candidate alias, form cue or type synonym, approved into versioned lists, plus a catalog-merge workflow for duplicate clusters like C107/C108.
 
 ## Time and AI use

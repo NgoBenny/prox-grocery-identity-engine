@@ -97,7 +97,7 @@ def cmd_evaluate(engine: Engine, args) -> int:
     truth = load_jsonl(args.truth, TruthLabel)
     splits = ["dev", "heldout", "all"] if args.split == "all" else [args.split]
     result = evaluate(engine, truth, Path(args.truth).read_text(encoding="utf-8-sig"), splits)
-    result["command"] = "prox-match " + " ".join(sys.argv[1:])
+    result["command"] = "prox-match " + " ".join(args.argv)
     _write(result, args.output)
     for split, s in result["splits"].items():
         m = s["metrics"]
@@ -172,6 +172,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    args.argv = sys.argv[1:] if argv is None else argv  # recorded in reports
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")  # Windows consoles default to cp1252
     try:

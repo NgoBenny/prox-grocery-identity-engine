@@ -63,6 +63,25 @@ def test_unknown_listing_in_truth_is_an_error():
         score({}, [_label("ghost", None)])
 
 
+def test_duplicate_truth_rows_are_rejected():  # issue #5
+    with pytest.raises(ValueError, match="repeat"):
+        score({"a": _decision("C1")}, [_label("a", "C1"), _label("a", "C1")])
+
+
+def test_report_records_the_argv_it_was_given(tmp_path, capsys):  # issue #5
+    import json
+
+    out = tmp_path / "report.json"
+    assert main(["evaluate", "--split", "dev", "--output", str(out)]) == 0
+    command = json.loads(out.read_text(encoding="utf-8"))["command"]
+    assert command == f"prox-match evaluate --split dev --output {out}"
+
+
+def test_negative_warmup_rejected():  # issue #5
+    with pytest.raises(ValueError):
+        bench.run(searches=10, warmup=-5)
+
+
 def test_evaluate_cli_never_modifies_truth(tmp_path, capsys):
     truth = FIXTURES_DIR / "ground_truth.jsonl"
     before = sha256(truth.read_text(encoding="utf-8"))

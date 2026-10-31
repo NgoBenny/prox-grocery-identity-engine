@@ -5,20 +5,20 @@
     "index_terms": 72,
     "search_terms": 86
   },
-  "build_ms": 39.34,
+  "build_ms": 38.81,
   "search": {
     "count": 100,
-    "p50_ms": 0.4289,
-    "p95_ms": 0.6803,
-    "max_ms": 0.8629,
+    "p50_ms": 0.2675,
+    "p95_ms": 0.5185,
+    "max_ms": 0.5493,
     "warmup": 10,
     "distinct_queries": 10
   },
   "match_one_listing": {
     "count": 100,
-    "p50_ms": 0.2771,
-    "p95_ms": 0.4382,
-    "max_ms": 0.5005
+    "p50_ms": 0.3088,
+    "p95_ms": 0.5493,
+    "max_ms": 0.6558
   },
   "percentile_method": "nearest-rank",
   "cache_policy": "no result cache; immutable in-memory index; decisions precomputed at load",

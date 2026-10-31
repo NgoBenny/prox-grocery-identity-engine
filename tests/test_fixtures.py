@@ -113,6 +113,12 @@ def test_generator_handles_unmapped_category():
     assert {r["retailer_category"] for r in rows} == {"Snacks"}
 
 
+@pytest.mark.parametrize("price", [True, False, "199", "1.99"])
+def test_bool_and_string_prices_rejected(price):  # issue #1
+    with pytest.raises(ValueError):
+        RetailerListing(listing_id="X", retailer="R", raw_name="Milk", price_cents=price)
+
+
 def test_negative_price_rejected():
     with pytest.raises(ValueError):
         RetailerListing(listing_id="X", retailer="R", raw_name="Milk", price_cents=-1)

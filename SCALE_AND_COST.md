@@ -16,19 +16,19 @@ weekly retailer feeds
 
 - **Incremental matching.** The decision key is `(listing content hash, catalog version, policy version)`. Assume 10–20% of listings change in a week, so 1–2M matches instead of 10M. A catalog or policy change re-matches only the affected types or categories.
 - **Partitioning (proposed).** Shard the catalog postings by category, with per-retailer concurrency limits and queue backpressure. Matching currently retrieves across the whole catalog; its type/form/pet vetoes and search's category gate are not category-sharded retrieval. A future router must search every plausible shard when category is uncertain, rather than trusting a noisy retailer aisle. For example, chicken words can refer to MEAT, PANTRY, FROZEN or PET products.
-- **Retrieval at scale.** The in-memory postings dict becomes a per-shard inverted index (a search engine or Postgres trigram/GIN). The current linear fuzzy vocabulary scan ([#3](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/3)) is the first thing to replace.
+- **Retrieval at scale.** The in-memory postings dict becomes a per-shard inverted index (a search engine or Postgres trigram/GIN). The current linear fuzzy vocabulary scan in `CatalogIndex.candidates` is the first thing to replace.
 
 ## Capacity arithmetic
 
 | Quantity | Value | Basis |
 |---|---|---|
-| Match latency per listing | 0.28 ms p50 | **measured** (46-ID catalog) |
+| Match latency per listing | 0.31 ms p50 | **measured** (46-ID catalog) |
 | Assumed latency at full catalog size (~100k IDs, indexed retrieval) | 3 ms | **assumption**: roughly 10× the small-corpus match latency; unvalidated |
 | Full 10M re-match | 10M × 3 ms = 8.3 CPU-hours | arithmetic |
 | Weekly incremental (2M changed) | 1.7 CPU-hours; ~6 min on 16 cores | arithmetic; ideal parallelism, requires multiple processes for this Python workload |
 | Average ingest rate | 10M / 7 days ≈ 16.5 listings/s; plan for 10× peak on feed day | arithmetic |
 | Raw snapshot | 10M × 0.5 KB ≈ 5 GB / week | **assumption**: 0.5 KB per listing |
-| Search p50 / p95 | 0.43 / 0.68 ms | **measured**, 100 listings; not a 10M claim |
+| Search p50 / p95 | 0.27 / 0.52 ms | **measured**, 100 listings; not a 10M claim |
 
 ## Cost model
 

@@ -43,6 +43,9 @@ class SearchIndex:
             for w in words | {w for ph in self.types[lid] for w in ph.split()}:
                 self.postings[w].add(lid)
         self.retailers = {row.retailer.casefold(): row.retailer for row in engine.listings.values()}
+        self.by_brand: dict[str | None, set[str]] = defaultdict(set)
+        for cid, product in index.products.items():
+            self.by_brand[product.brand].add(cid)
         self.by_canonical: dict[str, set[str]] = defaultdict(set)
         for lid, d in engine.decisions.items():
             if d["canonical_id"]:
@@ -50,9 +53,15 @@ class SearchIndex:
 
     def _intent(self, qf) -> list[str]:
         index = self.engine.index
+        # Any product covering every query word shares a posting with it, so the inverted
+        # index is a safe pre-filter. A brand-only query has no words: take that brand's items.
+        if qf.tokens:
+            pool = index.candidates(qf)
+        else:
+            pool = self.by_brand.get(qf.brand, set())
         hits = []
-        for cid, cf in index.features.items():
-            product = index.products[cid]
+        for cid in sorted(pool):
+            cf, product = index.features[cid], index.products[cid]
             words = set(cf.tokens) | {w for ph in cf.types for w in ph.split()}
             if _coverage(qf.tokens, words) < 1.0:
                 continue

@@ -10,6 +10,7 @@ A wrong-ID prediction is therefore both an FP and an FN. Zero denominators repor
 
 import datetime as dt
 import platform
+from collections import Counter
 
 from .fixtures import sha256
 from .matcher import ACCEPT_THRESHOLD, HIGH_CONFIDENCE, MIN_MARGIN
@@ -24,6 +25,9 @@ def score(decisions: dict[str, dict], truth: list[TruthLabel]) -> dict:
     missing = [t.listing_id for t in truth if t.listing_id not in decisions]
     if missing:
         raise ValueError(f"truth labels for unknown listings: {missing}")
+    repeated = sorted(lid for lid, n in Counter(t.listing_id for t in truth).items() if n > 1)
+    if repeated:
+        raise ValueError(f"truth labels repeat listings: {repeated}")
     tp = tn = fp = fn = 0
     high_conf = high_conf_wrong = 0
     category_known = category_wrong = 0
