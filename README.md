@@ -23,7 +23,7 @@ uv run prox-match search -q "chicken breast" --retailer FreshTown
 uv run prox-match evaluate                           # metrics + confusion report
 uv run prox-match benchmark --searches 100           # index build + p50/p95
 uv run prox-match fixtures --check                   # regenerate-and-compare fixtures
-uv run uvicorn prox_match.api:app --port 8000        # HTTP API, docs at http://127.0.0.1:8000/docs
+uv run uvicorn prox_match.api:app --port 8001        # HTTP API, docs at http://127.0.0.1:8001/docs
 ```
 
 The `match`, `search`, `evaluate`, `benchmark` and `demo` subcommands take `--catalog`, `--listings` and `--aliases`. Custom files must follow the documented record formats; the demo also requires its bundled T-series listing IDs. `fixtures` uses the bundled fixture paths, and the uvicorn command starts the API with the default data. Without uv: `python -m venv .venv`, activate it, `pip install -e . pytest httpx`, then run the same commands without `uv run`.
