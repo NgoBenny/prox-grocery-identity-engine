@@ -5,7 +5,7 @@ Hours marked *est.* are Claude's estimates from session and commit timestamps, p
 
 | Step | Category | Hours | Notes |
 |---|---|---|---|
-| Planning: read assessment, ChatGPT plan, Claude plan v2-v3 | design | 0.45 *est.* | Earlier sessions outside this repo; not timestamped here |
+| Planning: read assessment, ChatGPT plan, Claude plan v2-v3 | design | 2 *est.* | Earlier sessions outside this repo; not timestamped here |
 | Step 1: scaffold, catalog, listings, generator, truth labels | implementation | 0.75 *est.* | Committed 15:05 |
 | Step 1: review gate (2 skills, 6 fixes, 1 issue) | debugging | 0.25 *est.* | Fixes committed 15:07 |
 | Step 1: label review | testing | 0.1 *est.* | Approved 15:12, all 38 unchanged |
@@ -22,15 +22,15 @@ Hours marked *est.* are Claude's estimates from session and commit timestamps, p
 | PR #8: Codex review (2 fixes) + merge | testing | 0.25 *est.* | 16:50 -> 17:05 |
 | Final requirements audit vs the assessment, time report | documentation | 0.2 *est.* | 17:05 -> 17:17 |
 | Demo recording | documentation | _fill in_ | |
-| **Running total** | | **3.5 *est.*** | **6.5 h left** (before recording) |
+| **Running total** | | **5.05 *est.*** | **4.95 h left** (before recording) |
 
 ## By category (for the README)
 
 | Category | Hours |
 |---|---|
-| Design | 0.55 |
+| Design | 2.1 |
 | Implementation | 1.15 |
 | Testing | 0.65 |
 | Debugging | 0.75 |
 | Documentation | 0.4 + recording |
-| **Total** | **3.5 + recording** |
+| **Total** | **5.05 + recording** |
