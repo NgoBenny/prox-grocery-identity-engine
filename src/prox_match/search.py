@@ -43,6 +43,9 @@ class SearchIndex:
             for w in words | {w for ph in self.types[lid] for w in ph.split()}:
                 self.postings[w].add(lid)
         self.retailers = {row.retailer.casefold(): row.retailer for row in engine.listings.values()}
+        self.by_brand: dict[str | None, set[str]] = defaultdict(set)
+        for cid, product in index.products.items():
+            self.by_brand[product.brand].add(cid)
         self.by_canonical: dict[str, set[str]] = defaultdict(set)
         for lid, d in engine.decisions.items():
             if d["canonical_id"]:
@@ -55,7 +58,7 @@ class SearchIndex:
         if qf.tokens:
             pool = index.candidates(qf)
         else:
-            pool = {cid for cid, p in index.products.items() if p.brand == qf.brand}
+            pool = self.by_brand.get(qf.brand, set())
         hits = []
         for cid in sorted(pool):
             cf, product = index.features[cid], index.products[cid]

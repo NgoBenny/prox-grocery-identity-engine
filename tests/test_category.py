@@ -1,3 +1,4 @@
+import threading
 import time
 
 import pytest
@@ -35,6 +36,52 @@ def test_abandoned_timeouts_do_not_delay_later_calls(listing):  # issue #2
         assert ask_upstream(slow, row, timeout_s=0.05) == ("CATEGORY_UNCERTAIN", "UPSTREAM_TIMEOUT")
     assert ask_upstream(FakeUpstreamWorker("confident", "MEAT"), row, timeout_s=0.5) == (
         "MEAT", None)
+
+
+def test_upstream_saturation_is_bounded_and_recovers(monkeypatch, listing):
+    from prox_match import category
+
+    monkeypatch.setattr(category, "_upstream_slots", threading.BoundedSemaphore(2), raising=False)
+    release = threading.Event()
+    started = []
+
+    class Blocked:
+        def suggest(self, _):
+            started.append(threading.current_thread())
+            release.wait(2)
+            return "MEAT"
+
+    row = listing("Farmhouse Chicken Breast", "1 lb", "Farmhouse")
+    fast = FakeUpstreamWorker("confident", "MEAT")
+    try:
+        for _ in range(2):
+            assert ask_upstream(Blocked(), row, timeout_s=0.01) == (
+                "CATEGORY_UNCERTAIN", "UPSTREAM_TIMEOUT")
+        assert ask_upstream(fast, row) == ("CATEGORY_UNCERTAIN", "UPSTREAM_TIMEOUT")
+        assert len(started) == 2
+    finally:
+        release.set()
+        for thread in started:
+            thread.join(1)
+    assert ask_upstream(fast, row) == ("MEAT", None)
+
+
+def test_thread_start_failure_preserves_category_and_releases_capacity(monkeypatch, engine, listing):
+    from prox_match import category
+
+    monkeypatch.setattr(category, "_upstream_slots", threading.BoundedSemaphore(1), raising=False)
+    row = listing("Farmhouse Chicken Breast", "1 lb", "Farmhouse")
+    worker = FakeUpstreamWorker("confident", "PET")
+
+    def unavailable(_):
+        raise RuntimeError("can't start new thread")
+
+    with monkeypatch.context() as patch:
+        patch.setattr(threading.Thread, "start", unavailable)
+        decision = engine.match(row, worker)
+        assert decision["assigned_category"] == "MEAT"
+        assert "UPSTREAM_ERROR" in decision["reason_codes"]
+    assert ask_upstream(worker, row) == ("PET", None)
 
 
 def test_confident_conflict_flags_review_but_keeps_category(engine, listing):

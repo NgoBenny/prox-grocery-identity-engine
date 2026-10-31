@@ -22,13 +22,13 @@ weekly retailer feeds
 
 | Quantity | Value | Basis |
 |---|---|---|
-| Match latency per listing | 0.26 ms p50 | **measured** (46-ID catalog) |
+| Match latency per listing | 0.31 ms p50 | **measured** (46-ID catalog) |
 | Assumed latency at full catalog size (~100k IDs, indexed retrieval) | 3 ms | **assumption**: roughly 10× the small-corpus match latency; unvalidated |
 | Full 10M re-match | 10M × 3 ms = 8.3 CPU-hours | arithmetic |
 | Weekly incremental (2M changed) | 1.7 CPU-hours; ~6 min on 16 cores | arithmetic; ideal parallelism, requires multiple processes for this Python workload |
 | Average ingest rate | 10M / 7 days ≈ 16.5 listings/s; plan for 10× peak on feed day | arithmetic |
 | Raw snapshot | 10M × 0.5 KB ≈ 5 GB / week | **assumption**: 0.5 KB per listing |
-| Search p50 / p95 | 0.26 / 0.39 ms | **measured**, 100 listings; not a 10M claim |
+| Search p50 / p95 | 0.27 / 0.52 ms | **measured**, 100 listings; not a 10M claim |
 
 ## Cost model
 

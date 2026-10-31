@@ -19,6 +19,7 @@ from .normalize import aisle_category
 UNCERTAIN = "CATEGORY_UNCERTAIN"
 UNKNOWN = "UNKNOWN"
 UPSTREAM_TIMEOUT_S = 0.2
+_upstream_slots = threading.BoundedSemaphore(16)
 _IDENTITY_VETOES = {"TYPE_MISMATCH", "FORM_MISMATCH", "PET_HUMAN_CONFLICT"}
 
 
@@ -42,8 +43,10 @@ class FakeUpstreamWorker:
 def ask_upstream(worker, listing, timeout_s: float = UPSTREAM_TIMEOUT_S) -> tuple[str, str | None]:
     """-> (category or CATEGORY_UNCERTAIN, reason code or None). Never raises.
 
-    One daemon thread per call: an abandoned slow call can't queue up later calls the way
-    a shared fixed-size pool would."""
+    No waiting queue: saturated calls return uncertainty while existing workers finish."""
+    slots = _upstream_slots
+    if not slots.acquire(blocking=False):
+        return UNCERTAIN, "UPSTREAM_TIMEOUT"
     result: dict = {}
 
     def call():
@@ -51,9 +54,16 @@ def ask_upstream(worker, listing, timeout_s: float = UPSTREAM_TIMEOUT_S) -> tupl
             result["value"] = worker.suggest(listing)
         except Exception:  # noqa: BLE001 - a crashing resolver is treated like an uncertain one
             result["error"] = True
+        finally:
+            slots.release()
 
-    thread = threading.Thread(target=call, daemon=True, name="upstream")
-    thread.start()
+    # shortcut: threads cannot be cancelled; use process isolation for real workers that may hang.
+    try:
+        thread = threading.Thread(target=call, daemon=True, name="upstream")
+        thread.start()
+    except RuntimeError:
+        slots.release()
+        return UNCERTAIN, "UPSTREAM_ERROR"
     thread.join(timeout_s)
     if thread.is_alive():
         return UNCERTAIN, "UPSTREAM_TIMEOUT"

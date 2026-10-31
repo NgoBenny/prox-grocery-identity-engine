@@ -84,6 +84,15 @@ def test_brand_only_query(engine):
         r["canonical_id"] in {"C104", "C125", "C126"} for r in result["results"])
 
 
+def test_brand_only_query_does_not_scan_catalog(monkeypatch, engine):
+    class IndexedProducts(dict):
+        def items(self):
+            raise AssertionError("brand-only search must use the prebuilt brand lookup")
+
+    monkeypatch.setattr(engine.index, "products", IndexedProducts(engine.index.products))
+    assert set(_ids(engine.search("Heritage"))) == {"C104", "C125", "C126"}
+
+
 def test_organic_query_never_falls_back_to_conventional_spinach(engine):
     result = engine.search("organic baby spinach", "ValueMart")
     assert result["results"] == [] and result["reason"] == "no_safe_match"

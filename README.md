@@ -11,7 +11,7 @@ Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 ```bash
 uv sync --locked
 uv run prox-match demo      # one-command offline walkthrough
-uv run pytest -q            # 142 tests
+uv run pytest -q            # 154 tests
 ```
 
 Other commands:
@@ -92,7 +92,7 @@ Generation rules and record formats: [fixtures/README.md](fixtures/README.md).
 
 ### Category guard
 
-The catalog category of a matched ID wins by default. The simulated upstream AI worker can return `CATEGORY_UNCERTAIN`, time out (a real 0.2 s deadline) or crash, and the category doesn't change (`APPROVED_CATEGORY_PRESERVED`). A confident disagreement sets `reviewer_flag`. For a matched ID, only an explicit `conflict_review=True` call, the human-review path, applies the upstream category. Abstained listings get the category their plausible candidates agree on, otherwise a confident upstream suggestion if provided, otherwise `UNKNOWN`; they remain flagged for review.
+The catalog category of a matched ID wins by default. The simulated upstream AI worker can return `CATEGORY_UNCERTAIN`, time out (a real 0.2 s deadline) or crash, and the category doesn't change (`APPROVED_CATEGORY_PRESERVED`). At most 16 worker threads may be active; capacity exhaustion returns uncertainty immediately, and thread-start failure becomes `UPSTREAM_ERROR`. Timed-out threads keep their slot until they finish; real workers that can hang indefinitely would need process isolation. A confident disagreement sets `reviewer_flag`. For a matched ID, only an explicit `conflict_review=True` call, the human-review path, applies the upstream category. Abstained listings get the category their plausible candidates agree on, otherwise a confident upstream suggestion if provided, otherwise `UNKNOWN`; they remain flagged for review.
 
 ## Sample output (real runs)
 
@@ -167,7 +167,7 @@ A wrong-ID prediction counts as both an FP and an FN. Zero denominators report `
 
 Across all 100 listings, 16 abstain and 22 carry `reviewer_flag`. Of the 62 clean generated listings, 3 abstain, all of them whole milk hitting the C107/C108 duplicate.
 
-**Benchmark** (`prox-match benchmark`, Windows 11 laptop, AMD64 with 12 logical CPUs, Python 3.12.14): engine build (load, index, match all 100 listings, search index) **39 ms**; **100 searches p50 0.26 ms, p95 0.39 ms** after 10 warm-ups (three runs within 0.01 ms; before the [#3](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/3) search pre-filter it was p50 0.43, p95 0.68); single-listing match p50 0.26 ms. Percentiles are nearest-rank. **Cache policy:** no result cache; the index is built at startup and treated as read-only, and decisions are computed once at load, so search never re-runs the matcher. Timings vary run to run; these are small-corpus measurements.
+**Benchmark** (`prox-match benchmark`, Windows 11 laptop, AMD64 with 12 logical CPUs, Python 3.12.14): engine build (load, index, match all 100 listings, search index) **39 ms**; **100 searches p50 0.27 ms, p95 0.52 ms** after 10 warm-ups; single-listing match p50 0.31 ms. This is the saved post-review run; an earlier PR run measured 0.26 / 0.39 ms for search, illustrating timing variation. Before the [#3](https://github.com/NgoBenny/prox-grocery-identity-engine/issues/3) search pre-filter, the saved result was p50 0.43 / p95 0.68 ms. Percentiles are nearest-rank. **Cache policy:** no result cache; the index is built at startup and treated as read-only, and decisions are computed once at load, so search never re-runs the matcher. These are small-corpus measurements, not a controlled full-scale speedup study.
 
 ## Human review: what goes there, what never auto-approves
 
@@ -195,7 +195,7 @@ Across all 100 listings, 16 abstain and 22 carry `reviewer_flag`. Of the 62 clea
 - [x] Category guard vs simulated `CATEGORY_UNCERTAIN`, timeout, and confident conflict; corrected-category examples (T008, T010)
 - [x] `/search` with retailer filter, dedup by (retailer, canonical_id), typo and related fallback, `no_safe_match`, exposed score components
 - [x] Precision, recall, exact-ID accuracy, abstention, high-confidence FP rate, category error rate, confusion report
-- [x] ≥ 20 regression assertions: 28 parametrized adversarial cases plus 114 other tests (142 total)
+- [x] ≥ 20 regression assertions: 28 parametrized adversarial cases plus 126 other tests (154 total)
 - [x] Indexing + 100-search benchmark with measured p50/p95
 - [x] SCALE_AND_COST.md, AI_USAGE.md, DEMO.md
 - [ ] LLM secondary resolver: deliberately not built; the upstream-worker interface shows where one plugs in
