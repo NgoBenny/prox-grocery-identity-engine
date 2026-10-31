@@ -6,9 +6,9 @@ AI tools wrote most of the code, fixtures and docs in this repo. I directed the 
 
 | Tool | Model | Used for |
 |---|---|---|
-| ChatGPT (web) | Not recorded | First implementation plan (`PROX_TRACK_C_IMPLEMENTATION_PLAN.md`, kept outside the repo) |
+| ChatGPT (web) | GPT-6 Sol High (Chat) | First implementation plan (`PROX_TRACK_C_IMPLEMENTATION_PLAN.md`, kept outside the repo) |
 | Claude Code, desktop app | Claude Opus 5.5 | Plan revision, all scaffolding, fixtures, truth-label drafts, engine code, tests, docs; ran the review skills after implementation Steps 1–3 |
-| Codex (desktop) | Not recorded | Independent review of Steps 1–4 with its own review skills; code fixes in Steps 2–3 and documentation corrections in Step 4 |
+| Codex (desktop) | GPT-6.1 Sol Medium | Independent review of Steps 1–4 with its own review skills; code fixes in Steps 2–3 and documentation corrections in Step 4 |
 
 Review skills used: `/code-review` and `ponytail:ponytail-review` (Claude Code, implementation Steps 1–3); `agent-skills:code-review-and-quality` and `ponytail:ponytail-review` (Codex, including the Step 4 documentation review).
 
