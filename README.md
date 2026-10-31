@@ -11,7 +11,7 @@ Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 ```bash
 uv sync --locked
 uv run prox-match demo      # one-command offline walkthrough
-uv run pytest -q            # 154 tests
+uv run pytest -q            # 155 tests
 ```
 
 Other commands:
@@ -195,7 +195,7 @@ Across all 100 listings, 16 abstain and 22 carry `reviewer_flag`. Of the 62 clea
 - [x] Category guard vs simulated `CATEGORY_UNCERTAIN`, timeout, and confident conflict; corrected-category examples (T008, T010)
 - [x] `/search` with retailer filter, dedup by (retailer, canonical_id), typo and related fallback, `no_safe_match`, exposed score components
 - [x] Precision, recall, exact-ID accuracy, abstention, high-confidence FP rate, category error rate, confusion report
-- [x] ≥ 20 regression assertions: 28 parametrized adversarial cases plus 126 other tests (154 total)
+- [x] ≥ 20 regression assertions: 29 parametrized adversarial cases plus 126 other tests (155 total)
 - [x] Indexing + 100-search benchmark with measured p50/p95
 - [x] SCALE_AND_COST.md, AI_USAGE.md, DEMO.md
 - [ ] LLM secondary resolver: deliberately not built; the upstream-worker interface shows where one plugs in
